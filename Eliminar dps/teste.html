@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+
+<body>
+    <script type="text/javascript">
+        fetch("teste.json").then(response => response.json()).then(data => {
+            let text = "<table border='2'>"
+            data.testeMaior.map((t) => text += "<tr><td>" + t.teste+ "</td></tr>")
+            text += "</table>"
+            document.getElementById("teste").innerHTML = text;
+        })
+    </script>
+    <div id = "teste"></div>
+</body>
+
+</html>
