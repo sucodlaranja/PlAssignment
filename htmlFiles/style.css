@@ -3,7 +3,7 @@
     
     margin-left: 25%;
     display: grid;
-   
+    right: 10%;
     row-gap: 30px;
     
     position: absolute;
@@ -16,9 +16,16 @@
 }
 
 .alinea {
-    font-size: 40px;
+    font-size: 30px;
    
 }
 body {
     background-color: white;
+}
+
+.footer {
+    position : absolute;
+    bottom: -25%;
+    right: 50%;
+    display: inline;
 }
