@@ -92,5 +92,7 @@ def read_emd(filename):
             total += 1
 
     apto_per = (apto/total) * 100
+
     return min_year, max_year, dic_by_gender_year, dic_by_modality_year, dic_by_age_gender, dic_by_year_federated, \
            apto_per, 100-apto_per, dic_address
+           
