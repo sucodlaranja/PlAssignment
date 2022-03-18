@@ -68,24 +68,27 @@ def read_emd(filename):
             federated = h.group('federated')
             result = h.group('result')
             address = h.group('address')
-            r = (h.group('firstName'), modality)
+            firstName = h.group('firstName')
+            lastName = h.group('lastName')
+            r1 = (firstName, lastName, modality)
+            r2 = (firstName, lastName, age)
 
             max_year, min_year = new_year(new_date, max_year, min_year)
 
-            add_dic_dic(dic_by_gender_year, year, gender,r)
-            add_dic_dic(dic_by_gender_year, 'total', gender,r)
+            add_dic_dic(dic_by_gender_year, year, gender,r1)
+            add_dic_dic(dic_by_gender_year, 'total', gender,r1)
 
-            add_dic_dic(dic_by_modality_year, year, modality,r)
-            add_dic_dic(dic_by_modality_year, 'total', modality,r)
+            add_dic_dic(dic_by_modality_year, year, modality,r2)
+            add_dic_dic(dic_by_modality_year, 'total', modality,r2)
 
-            add_dic_dic(dic_by_year_federated, year, federated,r)
+            add_dic_dic(dic_by_year_federated, year, federated,r1)
 
-            add_dic(dic_address,address,result)
+            add_dic(dic_address,address,r1)
 
             if age >= 35:
-                add_dic_dic(dic_by_age_gender, '>=35', gender,r)
+                add_dic_dic(dic_by_age_gender, '>=35', gender,r1)
             else:
-                add_dic_dic(dic_by_age_gender, '<35', gender,r)
+                add_dic_dic(dic_by_age_gender, '<35', gender,r1)
 
             if result.lower() == 'true':
                 apto += 1
