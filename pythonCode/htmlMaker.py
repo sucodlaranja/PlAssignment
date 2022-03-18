@@ -1,7 +1,7 @@
 import re 
 from readFiles import read_emd
 back = "<a href=\"../index.html\">back<a>"
-min_year, max_year, dic_by_gender_year, dic_by_modality_year, dic_by_age_gender, dic_by_year_federated,apto_per,apto_per, dic_address = read_emd("../InputFiles/emd.csv")
+min_year, max_year, dic_by_gender_year, dic_by_modality_year, dic_by_age_gender, dic_by_year_federated,apto_per, dic_address = read_emd("../InputFiles/emd.csv")
 def makeIndex():
     index = open("../htmlFiles/index.html",'w')
 
@@ -45,16 +45,93 @@ def makeA():
           '''% (back,min_year,max_year),file=a)
     a.close()
 
+
+
 def makeB():
     b = open("../htmlFiles/Pages/b.html",'w')
-    for ano in dic_by_gender_year.keys():
-        anohtml = re.sub("(.)","<h1>\1:<h1>",ano)
-        print("%s"% anohtml,file=b)
-        for genero in dic_by_gender_year[ano].keys():
-            for h in dic_by_gender_year[ano][genero]:
-                print(h[0])
+    print(back,file=b)
+    dic_by_gender_year_sorted = sorted(dic_by_gender_year.keys())
+    for year in dic_by_gender_year_sorted:  
+        print(re.sub(r'(.+)',r'<h1>\1<h1>',year),file=b)
+        for gender in dic_by_gender_year[year].keys():
+            print(re.sub(r'(.+)',r'<h2>\1<h2>',gender),file=b)
+            dic_ordened = sorted(dic_by_gender_year[year][gender],key=lambda x: x[0],reverse=False)
+            for person in dic_ordened:
+                print("<p> Nome: %s </p><p>Modalidade: %s</p><hr/>" %(person[0],person[1]),file=b)
+    b.close()
+
+
+def makeC():
+    c = open("../htmlFiles/Pages/c.html",'w')
+    print(back,file=c)
+    dic_by_modality_year_sorted = sorted(dic_by_modality_year.keys())
+    
+    for year in dic_by_modality_year_sorted:  
+        print(re.sub(r'(.+)',r'<h1>\1<h1>',year),file=c)
+        dic_modality_sorted = sorted(dic_by_modality_year[year])
+        
+        for modality in dic_modality_sorted:
+            print(re.sub(r'(.+)',r'<h2>\1<h2>',modality),file=c)
+            dic_ordened = sorted(dic_by_modality_year[year][modality],key=lambda x: x[0],reverse=False)
+            
+            for person in dic_ordened:
+                print("<p> Nome: %s </p><p>Modalidade: %s</p><hr/>" %(person[0],person[1]),file=c)
+    c.close()
+
+
+def makeD():
+    d = open("../htmlFiles/Pages/d.html",'w')
+    print(back,file=d)
+    
+    for age in dic_by_age_gender:  
+        print(re.sub(r'(.+)',r'<h1>\1<h1>',age),file=d)
+        dic_by_age_sorted = sorted(dic_by_age_gender[age])
+        
+        for gender in dic_by_age_sorted:
+            print(re.sub(r'(.+)',r'<h2>\1<h2>',gender),file=d)
+            dic_ordened = sorted(dic_by_age_gender[age][gender],key=lambda x: x[0],reverse=False)
+            
+            for person in dic_ordened:
+                print("<p> Nome: %s </p><p>Modalidade: %s</p><hr/>" %(person[0],person[1]),file=d)
+    d.close()
     
     
+#TODO esperar pelo Jorge
+def makeE():
+    e = open("../htmlFiles/Pages/e.html",'w')
+    adress_ordened = sorted(dic_address.keys(),reverse=False)
+    for adress in adress_ordened:
+        print(re.sub(r'(.+)',r'<h1>\1<h1>',adress),file=e)
+    e.close()
+    
+    
+def makeF():
+    f = open("../htmlFiles/Pages/f.html",'w')
+    order_year = sorted(dic_by_year_federated.keys())
+    for year in order_year:
+        print(re.sub(r'(.+)',r'<h1>\1<h1>',year),file=f)
+        for federated in dic_by_year_federated[year]:
+            if(federated == 'true'): print("<h2>Federado<h2>",file=f)
+            else: print("<h2>Não Federado<h2>",file=f)
+            
+            dic_ordened = sorted(dic_by_year_federated[year][federated],key=lambda x: x[0],reverse=False)
+            for person in dic_ordened:
+                print("<p> Nome: %s </p><p>Modalidade: %s</p><hr/>" %(person[0],person[1]),file=f)
+    f.close()
+
+
+#TODO ta so a dar um valor
+def makeG():
+    g = open("../htmlFiles/Pages/g.html",'w')
+    print('''
+          <h1></h1>
+          
+          ''')
+
 makeB()
-
-
+makeC()
+makeD()
+makeE()
+makeF()
+makeG()
+makeIndex()
