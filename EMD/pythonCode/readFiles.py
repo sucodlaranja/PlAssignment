@@ -26,6 +26,16 @@ def add_dic(dic, first_key, result):
     dic[first_key].append(result)
 
 
+def inc_dic(dic, first_key, boll):
+    if first_key not in dic.keys():
+        dic[first_key] = (0, 0)
+
+    a, b = dic[first_key]
+    if boll:
+        a += 1
+    dic[first_key] = (a, b+1)
+
+
 def read_emd(filename):
     f = open(filename, encoding="utf-8")
     f.readline()
@@ -38,8 +48,7 @@ def read_emd(filename):
     dic_by_age_gender = {}
     dic_by_year_federated = {}
     dic_address = {}
-    apto = 0.0
-    total = 0.0
+    dic_year_apo = {}
 
     # _id, index, dataEMD, nome / primeiro, nome / último, idade, género, morada, modalidade, clube, email, federado,
 
@@ -90,12 +99,8 @@ def read_emd(filename):
             else:
                 add_dic_dic(dic_by_age_gender, '<35', gender,r1)
 
-            if result.lower() == 'true':
-                apto += 1
-            total += 1
-
-    apto_per = (apto/total) * 100
+            inc_dic(dic_year_apo, year, result.lower() == 'true')
 
     return min_year, max_year, dic_by_gender_year, dic_by_modality_year, dic_by_age_gender, dic_by_year_federated, \
-           apto_per, 100-apto_per, dic_address
+        dic_year_apo, dic_address
            
