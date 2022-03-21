@@ -46,7 +46,7 @@ def readHeader(linha):
 
 #reads given files and makes the info dictionary
 def readFile(filepath):
-    file = open(filepath,'r')
+    file = open(filepath, 'r', encoding="utf-8")
     readHeader(file.readline())
     csvExpression = re.compile(r'(?P<num>\d+),'
                             r'(?P<name>[^,]+),'
