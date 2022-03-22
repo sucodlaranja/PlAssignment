@@ -50,8 +50,8 @@ def readFile(filepath):
     readHeader(file.readline())
     csvExpression = re.compile(r'(?P<num>\d+),'
                             r'(?P<name>[^,]+),'
-                            r'(?P<course>[^,]+)'
-                            r',?((?P<grades>(\d+,?)'+ (dic_header['grades_quant']) + r'))?,*\b')
+                            r'(?P<course>[^,\n]+)'
+                            r',?((?P<grades>(\d+,?)'+ (dic_header['grades_quant']) + r'))?,*(\b)?')
     
 
     dic_info = []
