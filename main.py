@@ -1,3 +1,4 @@
+from math import sqrt
 import re
 
 #header dictionary
@@ -9,7 +10,7 @@ headerExpression = re.compile(r'\b(?P<num>[^,]+),'
                               r'(?P<course>[^,]+)'
                               r'(,(?P<grades>\w+)'
                               r'((?P<grades_quant>{\d+}|{\d+,\d+})))?'
-                              r'(::((?P<func>\w+)))?,*(\b)?')
+                              r'(::(?P<func>\w+(::\w+)*))?,*(\b)?')
 
 
 #Applies functions in header
@@ -22,6 +23,14 @@ def apply_func(grades):
         
     if(dic_header['func'] == 'sum'):
         return sum
+    elif(dic_header['func'] == 'dp'):
+        size = len(split_grades)
+        median = sum/size
+        dp = 0
+        for number in split_grades:
+            dp+= pow(float(number)-median,2)
+        return sqrt(dp/size)
+            
     else:
         return sum/len(split_grades)
 
@@ -51,9 +60,8 @@ def readFile(filepath):
     csvExpression = re.compile(r'(?P<num>\d+),'
                             r'(?P<name>[^,]+),'
                             r'(?P<course>[^,\n]+)'
-                            r',?((?P<grades>(\d+,?)'+ (dic_header['grades_quant']) + r'))?,*(\b)?')
+                            r',?((?P<grades>(\d+(.\d+)?,?)'+ (dic_header['grades_quant']) + r'))?,*(\b)?')
     
-
     dic_info = []
     for linha in file.readlines():
         match = csvExpression.search(linha)
@@ -72,4 +80,5 @@ def readFile(filepath):
             dic_info.append(temp)
             
     return(dic_info)
+
 
