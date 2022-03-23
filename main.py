@@ -1,4 +1,4 @@
-from math import sqrt
+from math import ceil, floor, sqrt
 import re
 
 #header dictionary
@@ -14,22 +14,43 @@ headerExpression = re.compile(r'\b(?P<num>[^,]+),'
 
 
 #Applies functions in header
-def apply_func(grades):
+def apply_func(func,grades):
     split_grades = grades.split(",")
     sum = 0
     
     for number in split_grades:
         sum += float(number)
         
-    if(dic_header['func'] == 'sum'):
+    if(func == 'sum'):
         return sum
-    elif(dic_header['func'] == 'dp'):
+    
+    elif(func == 'dp'):
         size = len(split_grades)
         median = sum/size
         dp = 0
         for number in split_grades:
             dp+= pow(float(number)-median,2)
         return sqrt(dp/size)
+    elif(func == 'mode'):
+        numberOrder = {}
+        for number in split_grades:
+            if(number in numberOrder.keys()):
+                numberOrder[number] += 1;
+            else:
+                numberOrder[number] = 1;
+            
+        return max(numberOrder, key=numberOrder.get)
+    elif(func == 'median'):
+        numbers = []
+        for number in split_grades:
+            numbers.append(float(number))
+        numbers = sorted(numbers)
+        size = len(numbers)
+        print(size)
+        if(size % 2 != 0):
+            return numbers[int((size/2)-1)]
+        else:
+            return (numbers[floor(size/2)-1] + numbers[ceil(size/ 2) - 1]) / 2          
             
     else:
         return sum/len(split_grades)
@@ -74,8 +95,10 @@ def readFile(filepath):
             if('grades' in dic_header.keys() and ('func' not in dic_header.keys())):
                 temp[dic_header['grades']] = '[' + match.group('grades') + ']'
             elif 'func' in dic_header.keys():
-                func_key = dic_header['grades'] + "_" + dic_header['func']
-                temp[func_key] = apply_func(match.group('grades'))
+                func_split = dic_header['func'].split("::");
+                for func in func_split:
+                    func_key = dic_header['grades'] + "_" + func
+                    temp[func_key] = apply_func(func,match.group('grades'))
                 
             dic_info.append(temp)
             
