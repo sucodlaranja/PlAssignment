@@ -25,4 +25,6 @@ def apply_func(func,grades):
         result = min(numbers)
     elif(func_lower == 'mean'):
         result = statistics.mean(numbers)
+    elif(func_lower == 'grades'):
+        result = "[" + grades + "]"
     return result
