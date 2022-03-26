@@ -1,7 +1,7 @@
 import re
 
 def create_json(filename, list_of_dic):
-    filename_json = re.sub(r'(\w+).\w+', r'\1.json', filename)
+    filename_json = re.sub(r'([\w \\/]+).\w+', r'\1.json', filename)
     
 
     json_text = "[\n"
