@@ -3,18 +3,18 @@
       "Número": "3162",
       "Nome": "Cândido Faísca",
       "Curso": "Teatro",
-      "Notas": [12,13,14,15,16]
+      "Notas": [12.0, 13.0, 14.0, 15.0, 16.0]
     },
     {
       "Número": "7777",
       "Nome": "Cristiano Ronaldo",
       "Curso": "Desporto",
-      "Notas": [17,12,20,11,12]
+      "Notas": [17.0, 12.0, 20.0, 11.0, 12.0]
     },
     {
       "Número": "264",
       "Nome": "Marcelo Sousa",
       "Curso": "Ciência Política",
-      "Notas": [18,19,19,20,18]
+      "Notas": [18.0, 19.0, 19.0, 20.0, 18.0]
     }
 ]

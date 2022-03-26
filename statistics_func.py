@@ -3,13 +3,9 @@ import statistics
 
 
 #applies given function in grades
-def apply_func(func,grades):
+def apply_func(func, numbers):
     func_lower = func.lower()
-    split_grades = grades.split(",")
     result = 0
-    numbers = []
-    for number in split_grades:
-        numbers.append(float(number))
         
     if(func_lower == 'sum'):
         result = sum(numbers) 
@@ -26,5 +22,5 @@ def apply_func(func,grades):
     elif(func_lower == 'mean'):
         result = statistics.mean(numbers)
     elif(func_lower == 'grades'):
-        result = "[" + grades + "]"
+        result = numbers
     return result

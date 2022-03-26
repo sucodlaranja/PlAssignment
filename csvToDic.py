@@ -50,13 +50,21 @@ def readFile(filepath):
             temp[dic_header['name']] = match.group('name')
             temp[dic_header['course']] = match.group('course')
             
-            if('grades' in dic_header.keys() and ('func' not in dic_header.keys())):
-                temp[dic_header['grades']] = '[' + match.group('grades') + ']'
-            elif 'func' in dic_header.keys():
-                func_split = dic_header['func'].split("::");
-                for func in func_split:
-                    func_key = dic_header['grades'] + "_" + func
-                    temp[func_key] = apply_func(func,match.group('grades'))
+            if 'grades' in dic_header.keys():
+
+                numbers = []
+                for number in match.group('grades').split(','):
+                    if number:
+                        numbers.append(float(number))
+
+                if 'func' not in dic_header.keys():
+                    temp[dic_header['grades']] = numbers
+                else:
+                    func_split = dic_header['func'].split("::")
+                    for func in func_split:
+                        func_key = dic_header['grades'] + "_" + func
+                        temp[func_key] = apply_func(func, numbers)
+
                 
             dic_info.append(temp)
         
