@@ -2,8 +2,7 @@ from math import ceil, floor, sqrt
 import re
 from statistics_func import apply_func
 
-#header dictionary
-dic_header = {}
+
 
 #Expression to read file header
 headerExpression = re.compile(r'\b(?P<num>[^,]+),'
@@ -16,6 +15,8 @@ headerExpression = re.compile(r'\b(?P<num>[^,]+),'
 
 #Reads the header and insters int a dictionary all necessary info
 def readHeader(linha):
+    #header dictionary
+    dic_header = {}
     match = headerExpression.search(linha)
     if(match):
         dic_header['num'] = match.group('num')
@@ -30,12 +31,13 @@ def readHeader(linha):
                 
         else:
             dic_header['grades_quant'] = '{0}'
+    return dic_header
         
 
 #reads given files and makes the info dictionary
 def readFile(filepath):
     file = open(filepath, 'r', encoding="utf-8")
-    readHeader(file.readline())
+    dic_header = readHeader(file.readline())
     csvExpression = re.compile(r'(?P<num>\d+),'
                             r'(?P<name>[^,]+),'
                             r'(?P<course>[^,\n]+)'
@@ -67,7 +69,6 @@ def readFile(filepath):
 
                 
             dic_info.append(temp)
-        
     return(dic_info)
 
 

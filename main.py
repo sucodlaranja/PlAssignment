@@ -24,7 +24,7 @@ def main():
             print("File read, generating JSON!")
             create_json(filename, l)
             print("JSON generated!")
-            filename = ""
+            
 
 
 
