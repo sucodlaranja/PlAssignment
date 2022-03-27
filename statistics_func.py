@@ -9,17 +9,17 @@ def apply_func(func, numbers):
     if func_lower == 'sum':
         result = round(sum(numbers), 1)
     elif func_lower == 'dp':
-        result = round(statistics.stdev(numbers))
+        result = round(statistics.stdev(numbers), 1)
     elif func_lower == 'mode':
-        result = round(statistics.mode(numbers))
+        result = round(statistics.mode(numbers), 1)
     elif func_lower == 'median':
-        result = round(statistics.median(numbers))
+        result = round(statistics.median(numbers), 1)
     elif func_lower == 'max':
         result = max(numbers)
     elif func_lower == 'min':
         result = min(numbers)
     elif func_lower == 'mean':
-        result = round(statistics.mean(numbers))
+        result = round(statistics.mean(numbers), 1)
     elif func_lower == 'grades':
         result = numbers
     return result
