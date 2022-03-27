@@ -1,9 +1,11 @@
 import re
 
+
+# Creates a JSON file given a name and a list of dictionaries.
 def create_json(filename, list_of_dic):
     filename_json = re.sub(r'([\w \\/]+).\w+', r'\1.json', filename)
-    
 
+    # Transform structure into text.
     json_text = "[\n"
     for dic in list_of_dic:
         json_text += "    {\n"
@@ -19,6 +21,7 @@ def create_json(filename, list_of_dic):
         json_text += "    },\n"
     json_text = json_text[:-2] + "\n]"
 
+    # Save text onto a file.
     json_file = open(filename_json, "w", encoding="utf-8")
     json_file.write(json_text)
     json_file.close()
