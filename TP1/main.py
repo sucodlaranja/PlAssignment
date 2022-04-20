@@ -1,8 +1,8 @@
 import os
 import re
 
-from csvToDic import readFile
-from dicToJSON import create_json
+from TP1.csvToDic import readFile
+from TP1.dicToJSON import create_json
 
 
 # Main interface of the program.

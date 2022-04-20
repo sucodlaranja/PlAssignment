@@ -11,6 +11,7 @@ headerExpression = re.compile(r'\b(?P<num>[^,]+),'
                               r'(::(?P<func>\w+(::\w+)*))?,*(\b)?')
 
 
+
 # Reads the header and insters int a dictionary all necessary info
 def readHeader(linha):
     # header dictionary
