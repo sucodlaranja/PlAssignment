@@ -3,42 +3,53 @@ import sys
 from proj_lex import tokens
 from proj_lex import literals
 
+
 def p_String(p):
-     'String : """ Texto """'
+    "String :  Texto "
+
 
 def p_Comentario(p):
-    'Comentario : "#" Texto "\n"'
+    "Comentario : '#' Texto NLINE "
+
 
 def p_CodeInLine(p):
-    'CodeInLine : "%" Texto "\n"'
+    "CodeInLine : '%' Texto NLINE"
+
 
 def p_CodeIn(p):
-    'CodeIn : OPENCODE Texto'
+    "CodeIn : OPENCODE Texto"
+
 
 def p_CodeOut(p):
-    'CodeOut : Texto CLOSECODE'
+    "CodeOut : Texto CLOSECODE"
+
 
 def p_Texto_Rec(p):
-    'Texto : ID Texto'
+    "Texto : ID Texto"
+
 
 def p_Texto_Vazio(p):
-    'Texto : '
+    "Texto : "
+
 
 def p_OpenPly(p):
-    'Ply : OPENPLY ID'
+    "Ply : OPENPLY ID"
+
 
 def p_Lexer(p):
-    'Lexer : Texto Func'
+    "Lexer : Texto Func"
+
 
 def p_Func_Return(p):
-    'Func : RETURN "(" "’" Texto "’" "," Texto ")"'
+    "Func : RETURN '(' '’' Texto '’' ',' Texto ')'"
+
 
 def p_Func_Error(p):
-    'Func : ERROR "(" "’" Texto "’" "," Texto ")"'
+    "Func : ERROR '(' '’' Texto '’' ',' Texto ')'"
+
 
 def p_Yacc(p):
-    'YACC : Texto ":" Texto "{" Texto "}"'
-
+    "YACC : Texto ':' Texto '{' Texto '}'"
 
 
 def p_error(p):
