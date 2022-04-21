@@ -1,7 +1,19 @@
 import ply.yacc as yacc
 import sys
-from proj_lex import tokens
-from proj_lex import literals
+from proj_lex import tokens, literals
+
+
+def p_frase(p):
+    """Frase : String 
+       Frase : Comentario 
+       Frase : CodeInLine 
+       Frase : CodeIn 
+       Frase : CodeOut 
+       Frase : Ply 
+       Frase : YACC 
+       Frase : Lexer 
+       Frase : Func 
+    """
 
 
 def p_String(p):
@@ -9,11 +21,12 @@ def p_String(p):
 
 
 def p_Comentario(p):
-    "Comentario : '#' Texto NLINE "
+    "Comentario : '#' Texto"
+    print(p[2])
 
 
 def p_CodeInLine(p):
-    "CodeInLine : '%' Texto NLINE"
+    "CodeInLine : '%' Texto"
 
 
 def p_CodeIn(p):
@@ -24,11 +37,11 @@ def p_CodeOut(p):
     "CodeOut : Texto CLOSECODE"
 
 
-def p_Texto_Rec(p):
+def p_Texto_rec(p):
     "Texto : ID Texto"
 
 
-def p_Texto_Vazio(p):
+def p_Texto_vazio(p):
     "Texto : "
 
 
