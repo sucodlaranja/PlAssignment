@@ -17,28 +17,33 @@ def p_frase(p):
 
 
 def p_String(p):
-    "String :  Texto "
+    "String :  '\"' Texto '\"' "
+    print("STRINGG")
 
 
 def p_Comentario(p):
     "Comentario : '#' Texto"
-    print(p[2])
+    print("Comentario!")
 
 
 def p_CodeInLine(p):
     "CodeInLine : '%' Texto"
+    print("Code in line")
 
 
 def p_CodeIn(p):
     "CodeIn : OPENCODE Texto"
+    print("Code in ")
 
 
 def p_CodeOut(p):
     "CodeOut : Texto CLOSECODE"
+    print("Code out")
 
 
 def p_Texto_rec(p):
     "Texto : ID Texto"
+    p[0] = p[1]
 
 
 def p_Texto_vazio(p):
@@ -47,22 +52,26 @@ def p_Texto_vazio(p):
 
 def p_OpenPly(p):
     "Ply : OPENPLY ID"
+    print("openplyyyyyyy")
 
 
 def p_Lexer(p):
     "Lexer : Texto Func"
+    print("lexaarrr")
 
 
 def p_Func_Return(p):
-    "Func : RETURN '(' '’' Texto '’' ',' Texto ')'"
+    "Func : RETURN '(' '`' Texto '`' ',' Texto ')'"
+    
 
 
 def p_Func_Error(p):
-    "Func : ERROR '(' '’' Texto '’' ',' Texto ')'"
+    "Func : ERROR '(' '`' Texto '`' ',' Texto ')'"
 
 
 def p_Yacc(p):
     "YACC : Texto ':' Texto '{' Texto '}'"
+    print("yaccccccccccccccc")
 
 
 def p_error(p):

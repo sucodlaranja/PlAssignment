@@ -1,0 +1,32 @@
+Frase :Frase : String                               {"}
+       Frase : Comentario                           {#}
+       Frase : CodeInLine                           {%}
+       Frase : CodeIn                               {OPENCODE}
+       Frase : CodeOut                              {RETURN,ERROR,’,),:,{,},CLOSECODE,ID}   
+       Frase : Ply                                  {OPENPLY}
+       Frase : YACC                                 {RETURN,ERROR,’,),:,{,},CLOSECODE,ID} aparece errado
+       Frase : Lexer                                {RETURN,ERROR,’,),:,{,},CLOSECODE,ID}       
+       Frase : Func                                 {RETURN,ERROR}
+
+"String :  \" Texto \" "
+"Comentario : '#' Texto"                            {#}
+
+"CodeInLine : '%' Texto"                            {%}
+
+"CodeIn : OPENCODE Texto"                           {OPENCODE}
+
+"CodeOut : Texto CLOSECODE"                         {RETURN,ERROR,’,),:,{,},CLOSECODE,ID}
+
+"Texto : ID Texto"                                  {ID}
+
+"Texto : "                                          {RETURN,ERROR,’,),:,{,},CLOSECODE}
+
+"Ply : OPENPLY ID"                                  {OPENPLY}
+
+"Lexer : Texto Func"                                {RETURN,ERROR,’,),:,{,},CLOSECODE,ID}
+
+"Func : RETURN '(' '’' Texto '’' ',' Texto ')'"     {RETURN}
+
+"Func : ERROR '(' '’' Texto '’' ',' Texto ')'"      {ERROR}
+
+"YACC : Texto ':' Texto '{' Texto '}'"              {RETURN,ERROR,’,),:,{,},CLOSECODE,ID}
