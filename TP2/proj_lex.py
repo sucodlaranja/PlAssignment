@@ -4,15 +4,11 @@ literals = ['"', '#', '\n', '%', '(', '’', ')', ':', '{', '}']
 tokens = ['ID', 'OPENCODE', 'CLOSECODE', 'OPENPLY', 'RETURN', 'ERROR']
 
 t_ID = r'.'
-t_OPENCODE = r'%*'
-t_CLOSECODE = r'*%'
-t_OPENPLY = r'*%'
-
-
-def t_num(t):
-    r'\d+'
-    t.value = int(t.value)
-    return t
+t_OPENCODE = r'%\*'
+t_CLOSECODE = r'\*%'
+t_OPENPLY = r'%% \w+'
+t_RETURN = r'return'
+t_ERROR = r'error'
 
 
 t_ignore = " \t\n"
