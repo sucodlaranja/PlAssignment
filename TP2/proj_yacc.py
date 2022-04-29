@@ -70,7 +70,8 @@ def p_Func_Error(p):
 
 
 def p_Yacc(p):
-    "YACC : Texto ':' Texto '{' Texto '}'"
+    "Yacc : Texto ':' Texto '{' Texto '}'"
+    print(p[0]," : ",p[1])
     print("yaccccccccccccccc")
 
 
