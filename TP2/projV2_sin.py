@@ -30,8 +30,12 @@ def p_LexLine_Error(p):
     """LexLine : '.' ERROR '(' PRINTSTRING ',' EXP ')' NEWLINE"""
 
 
+def p_LexLine_Newline(p):
+    """LexLine : NEWLINE"""
+
+
 def p_Code_CODEUNILINE(p):
-    """Code : '%' CODEUNILINE"""
+    """Code : CODEUNILINE"""
 
 
 def p_Code_CODEBLOCK(p):
@@ -56,6 +60,10 @@ def p_YaccLine_Code(p):
 
 def p_YaccLine_Exp(p):
     """YaccLine : ID ':' EXP '{' EXP '}'"""
+
+
+def p_YaccLine_Newline(p):
+    """YaccLine : NEWLINE"""
 
 
 def p_error(p):

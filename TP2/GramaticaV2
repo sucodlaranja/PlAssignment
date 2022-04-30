@@ -8,6 +8,7 @@ LexInput -> LexInput LexLine
 LexLine -> Code
          | REGEXP RETURN '(' '’' ID '’' ',' EXP ')' NEWLINE
          | '.' ERROR '(' PRINTSTRING ',' EXP ')' NEWLINE
+         | NEWLINE
 
 Code -> '%' CODEUNILINE
       | OPENCODE CODEBLOCK CLOSECODE
@@ -19,6 +20,7 @@ YaccInput -> YaccInput YaccLine
 
 YaccLine -> Code
           | ID ':' EXP '{' EXP '}'
+          | NEWLINE
 
 
 

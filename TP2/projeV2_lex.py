@@ -6,12 +6,12 @@ tokens = ['LEXINIT', 'YACCINIT', 'CODEUNILINE', 'OPENCODE', 'CLOSECODE','CODEBLO
 
 
 def t_LEXINIT(t):
-    r"""%% *LEX *\n"""
+    r"""%%[ ]*LEX[ ]*\n"""
     return t
 
 
 def t_YACCINIT(t):
-    r"""%% *YACC *\n"""
+    r"""%%[ ]*YACC[ ]*\n"""
     return t
 
 
