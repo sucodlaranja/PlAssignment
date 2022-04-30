@@ -1,0 +1,66 @@
+PlySimple -> LexGroup YaccGroup
+
+LexGroup -> LEXINIT LexInput
+
+LexInput -> LexInput LexLine
+          | LexLine
+
+LexLine -> Code
+         | REGEXP RETURN '(' '’' ID '’' ',' EXP ')' NEWLINE
+         | '.' ERROR '(' PRINTSTRING ',' EXP ')' NEWLINE
+
+Code -> '%' CODEUNILINE
+      | OPENCODE CODEBLOCK CLOSECODE
+
+YaccGroup -> YACCINIT YaccInput
+
+YaccInput -> YaccInput YaccLine
+          | YaccLine
+
+YaccLine -> Code
+          | ID ':' EXP '{' EXP '}'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Program -> Declarations Statements
+
+Declarations -> Declaration Declarations
+              | €
+
+Declaration -> Type IdList
+
+Type -> STR
+      | INT
+
+IdList -> id
+        | IdList ',' id
+
+Statements -> Statements Statement
+            | Statement
+
+Statement -> Atribucion
+            | Print
+
+Atribucion -> id '=' Exp
+
+Exp -> INT '(' Exp ')'
+    -> f_INPUT '( str ')

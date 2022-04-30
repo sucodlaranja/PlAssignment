@@ -4,19 +4,21 @@
 %tokens = [ ’VAR’,’NUMBER’ ]
 
 [a-zA-Z_][a-zA-Z0-9_]* return(’VAR’, t.value)
-\d+(\.\d+)?            return(’NUMBER’, float(t.value)
+\d+(\.\d+)?            return(’NUMBER’, float(t.value))
 .                      error(f"Illegal character ’{t.value[0]}’, [{t.lexer.lineno}]",t.lexer.skip(1) )
 
 %% YACC
 
-%precedence = [
+%*
+precedence = [
 (’left’,’+’,’-’),
 (’left’,’*’,’/’),
 (’right’,’UMINUS’),
 ]
+*%
 
-# symboltable : dictionary of variables
-ts = { }
+%# symboltable : dictionary of variables
+%ts = { }
 
 stat : VAR ’=’ exp { ts[t[1]] = t[3] }
 stat : exp { print(t[1]) }
@@ -29,7 +31,7 @@ exp : ’(’ exp ’)’ { t[0] = t[2] }
 exp : NUMBER { t[0] = t[1] }
 exp : VAR { t[0] = getval(t[1]) }
 
-%%
+%*
 
 def p_error(t):
     print(f"Syntax error at ’{t.value}’, [{t.lexer.lineno}]")
@@ -40,3 +42,5 @@ def getval(n):
 
 y=yacc()
 y.parse("3+4*7")
+
+*%
