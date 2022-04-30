@@ -1,8 +1,7 @@
 import ply.lex as lex
 
-literals = ['(', '’', ')', ',', '.', ':', '{', '}']
-tokens = ['LEXINIT', 'YACCINIT', 'CODEUNILINE','CODEBLOCK', 'ID','RETURN', 'ERROR'
-    , 'PRINTSTRING', 'STRING', 'NEWLINE', 'freespech']
+literals = ['(', ')', ',', '[', ']', ':', '{', '}', '.']
+tokens = ['LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR', 'CODELINE', 'str', 'id', 'int']
 
 
 def t_LEXINIT(t):
@@ -25,37 +24,32 @@ def t_ERROR(t):
     return t
 
 
-def t_CODEBLOCK(t):
-    r"""%\*.+\*%"""
+def t_OPERATOR(t):
+    r"""[=\+\*\-/]"""
     return t
 
 
-def t_CODEUNILINE(t):
+def t_CODELINE(t):
     r"""%[^\n]*?\n"""
     return t
 
 
-def t_ID(t):
+def t_str(t):
+    r"""[fr]?[\'\"´’].*?[\'\"´’]"""
+    return t
+
+
+def t_id(t):
     r"""[a-zA-Z_]\w*"""
     return t
 
 
-def t_STRING(t):
-    r"""[fr]?[\'\"].*[\'\"]"""
+def t_int(t):
+    r"""\d+(\.\d+)?"""
     return t
 
 
-def t_freespech(t):
-    r"""[^\n]+"""
-    return t
-
-
-def t_NEWLINE(t):
-    r"""\n"""
-    return t
-
-
-t_ignore = " \t"
+t_ignore = " \t\n"
 
 
 def t_error(t):
@@ -64,11 +58,3 @@ def t_error(t):
 
 
 lexer = lex.lex()
-
-f = open("teste1.txt", "r")
-
-program = f.read()
-lexer.input(program)
-
-for tok in lexer:
-    print(tok)

@@ -18,28 +18,16 @@ def p_LexInput_Single(p):
     """LexInput : LexLine"""
 
 
-def p_LexLine_Code(p):
-    """LexLine : Code"""
+def p_LexLine_Codeline(p):
+    """LexLine : CODELINE"""
 
 
 def p_LexLine_Return(p):
-    """LexLine : EXP RETURN '(' '’' ID '’' ',' EXP ')' NEWLINE"""
+    """LexLine : str RETURN '(' str ',' Code ')'"""
 
 
 def p_LexLine_Error(p):
-    """LexLine : '.' ERROR '(' PRINTSTRING ',' EXP ')' NEWLINE"""
-
-
-def p_LexLine_Newline(p):
-    """LexLine : NEWLINE"""
-
-
-def p_Code_CODEUNILINE(p):
-    """Code : CODEUNILINE"""
-
-
-def p_Code_CODEBLOCK(p):
-    """Code : CODEBLOCK"""
+    """LexLine : ERROR '(' str ',' Code ')'"""
 
 
 def p_YaccGroup(p):
@@ -54,16 +42,56 @@ def p_YaccInput_Single(p):
     """YaccInput : YaccLine"""
 
 
-def p_YaccLine_Code(p):
-    """YaccLine : Code"""
+def p_YaccLine_Codeline(p):
+    """YaccLine : CODELINE"""
 
 
 def p_YaccLine_Exp(p):
-    """YaccLine : ID ':' EXP '{' EXP '}'"""
+    """YaccLine : id ':' Grammar '{' Code '}'"""
 
 
-def p_YaccLine_Newline(p):
-    """YaccLine : NEWLINE"""
+def p_Grammar_List(p):
+    """Grammar : Grammar Elem"""
+
+
+def p_Grammar_Empty(p):
+    """Grammar : """
+
+
+def p_Elem_id(p):
+    """Elem : id"""
+
+
+def p_Elem_str(p):
+    """Elem : str"""
+
+
+def p_Code_exp(p):
+    """Code : Exp """
+
+
+def p_Code_Point(p):
+    """Code : Code '.' Exp"""
+
+
+def p_Code_Operator(p):
+    """Code : Code OPERATOR Exp"""
+
+
+def p_Exp_Function(p):
+    """Exp : id '(' Code ')'"""
+
+
+def p_Exp_List(p):
+    """Exp : id '[' Code ']'"""
+
+
+def p_Exp_id(p):
+    """Exp : id"""
+
+
+def p_Exp_int(p):
+    """Exp : int"""
 
 
 def p_error(p):
@@ -76,7 +104,7 @@ parser = yacc.yacc()
 
 # Read line from input and parse it
 
-f = open("teste1.txt", "r")
+f = open("teste2.txt", "r", encoding="utf-8")
 
 parser.success = True
 program = f.read()

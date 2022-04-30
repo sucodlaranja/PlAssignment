@@ -1,0 +1,33 @@
+PlySimple -> LexGroup YaccGroup
+
+LexGroup -> LEXINIT LexInput
+
+LexInput -> LexInput LexLine
+          | LexLine
+
+LexLine -> CODELINE
+         | str RETURN '(' '’' id '’' ',' Code ')'
+         | str ERROR '(' str ',' Code ')'
+
+YaccGroup -> YACCINIT YaccInput
+
+YaccInput -> YaccInput YaccLine
+          | YaccLine
+
+YaccLine -> CODELINE
+          | id ':' Grammar '{' Code '}'
+
+Grammar -> Grammar Elem
+         | €
+
+Elem -> id
+      | str
+
+Code -> Code OPERATOR Exp
+      | Exp '.' Exp
+      | Exp
+
+Exp -> id '(' Code ')'
+     | id '[' Code ']'
+     | id
+     | int

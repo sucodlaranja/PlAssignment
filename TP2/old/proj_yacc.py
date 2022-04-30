@@ -1,6 +1,5 @@
 import ply.yacc as yacc
 import sys
-from proj_lex import tokens, literals
 
 
 def p_frase(p):
