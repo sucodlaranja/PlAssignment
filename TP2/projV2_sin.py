@@ -23,7 +23,7 @@ def p_LexLine_Code(p):
 
 
 def p_LexLine_Return(p):
-    """LexLine : REGEXP RETURN '(' '’' ID '’' ',' EXP ')' NEWLINE"""
+    """LexLine : EXP RETURN '(' '’' ID '’' ',' EXP ')' NEWLINE"""
 
 
 def p_LexLine_Error(p):
@@ -39,7 +39,7 @@ def p_Code_CODEUNILINE(p):
 
 
 def p_Code_CODEBLOCK(p):
-    """Code : OPENCODE CODEBLOCK CLOSECODE"""
+    """Code : CODEBLOCK"""
 
 
 def p_YaccGroup(p):

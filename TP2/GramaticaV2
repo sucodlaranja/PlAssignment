@@ -10,8 +10,8 @@ LexLine -> Code
          | '.' ERROR '(' PRINTSTRING ',' EXP ')' NEWLINE
          | NEWLINE
 
-Code -> '%' CODEUNILINE
-      | OPENCODE CODEBLOCK CLOSECODE
+Code -> CODEUNILINE
+      | CODEBLOCK
 
 YaccGroup -> YACCINIT YaccInput
 

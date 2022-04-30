@@ -1,8 +1,8 @@
 import ply.lex as lex
 
 literals = ['(', '’', ')', ',', '.', ':', '{', '}']
-tokens = ['LEXINIT', 'YACCINIT', 'CODEUNILINE', 'OPENCODE', 'CLOSECODE','CODEBLOCK',
-          'REGEXP', 'ID','RETURN', 'ERROR', 'PRINTSTRING', 'EXP', 'NEWLINE']
+tokens = ['LEXINIT', 'YACCINIT', 'CODEUNILINE','CODEBLOCK', 'ID','RETURN', 'ERROR'
+    , 'PRINTSTRING', 'STRING', 'NEWLINE', 'freespech']
 
 
 def t_LEXINIT(t):
@@ -12,16 +12,6 @@ def t_LEXINIT(t):
 
 def t_YACCINIT(t):
     r"""%%[ ]*YACC[ ]*\n"""
-    return t
-
-
-def t_OPENCODE(t):
-    r"""%\*"""
-    return t
-
-
-def t_CLOSECODE(t):
-    r"""\*%"""
     return t
 
 
@@ -35,33 +25,28 @@ def t_ERROR(t):
     return t
 
 
+def t_CODEBLOCK(t):
+    r"""%\*.+\*%"""
+    return t
+
+
+def t_CODEUNILINE(t):
+    r"""%[^\n]*?\n"""
+    return t
+
+
 def t_ID(t):
     r"""[a-zA-Z_]\w*"""
     return t
 
 
-def t_PRINTSTRING(t):
-    r"""[f|r]?\"[\"]+\""""
+def t_STRING(t):
+    r"""[fr]?[\'\"].*[\'\"]"""
     return t
 
 
-def t_CODEUNILINE(t):
-    r""".+?\n"""
-    return t
-
-
-def t_CODEBLOCK(t):
-    r"""[^\n]+?"""
-    return t
-
-
-def t_EXP(t):
-    r"""[^\n]+?"""
-    return t
-
-
-def t_REGEXP(t):
-    r"""[^\n]+?"""
+def t_freespech(t):
+    r"""[^\n]+"""
     return t
 
 
