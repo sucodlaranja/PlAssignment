@@ -7,6 +7,15 @@
 '\d+(\.\d+)?'            return(’NUMBER’, float(t.value))
 error(f"Illegal character {t.value[0]}, [{t.lexer.lineno}]",t.lexer.skip(1) )
 
+%*
+
+precedence = [
+(’left’,’+’,’-’),
+(’left’,’*’,’/’),
+(’right’,’UMINUS’),
+]
+*%
+
 %% YACC
 
 %# symboltable : dictionary of variables
@@ -22,3 +31,13 @@ exp : ’-’ exp { t[0] = t[2] }
 exp : ’(’ exp ’)’ { t[0] = t[2] }
 exp : NUMBER { t[0] = t[1] }
 exp : VAR { t[0] = getval(t[1]) }
+
+
+%*
+
+def ola():
+    gfsfdg
+    print(ola)
+*%
+
+ 

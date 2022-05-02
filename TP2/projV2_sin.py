@@ -22,6 +22,10 @@ def p_LexLine_Codeline(p):
     """LexLine : CODELINE"""
 
 
+def p_LexLine_MultiCode(p):
+    """LexLine : MultiCode"""
+    
+    
 def p_LexLine_Return(p):
     """LexLine : str RETURN '(' str ',' Code ')'"""
 
@@ -44,6 +48,10 @@ def p_YaccInput_Single(p):
 
 def p_YaccLine_Codeline(p):
     """YaccLine : CODELINE"""
+    
+    
+def p_YaccLine_MultiCode(p):
+    """YaccLine : MultiCode"""
 
 
 def p_YaccLine_Exp(p):
@@ -64,7 +72,11 @@ def p_Elem_id(p):
 
 def p_Elem_str(p):
     """Elem : str"""
-
+    
+    
+def p_MultiCode_(p):
+    """MultiCode : OPENCODE MCODE"""
+    
 
 def p_Code_exp(p):
     """Code : Exp """
@@ -76,7 +88,7 @@ def p_Code_Point(p):
 
 def p_Code_Operator(p):
     """Code : Code OPERATOR Exp"""
-
+ 
 
 def p_Exp_Function(p):
     """Exp : id '(' Code ')'"""
