@@ -28,10 +28,12 @@ def p_LexLine_MultiCode(p):
     
 def p_LexLine_Return(p):
     """LexLine : str RETURN '(' str ',' Code ')'"""
+    
 
 
 def p_LexLine_Error(p):
     """LexLine : ERROR '(' str ',' Code ')'"""
+    print(p[3])
 
 
 def p_YaccGroup(p):
@@ -72,6 +74,7 @@ def p_Elem_id(p):
 
 def p_Elem_str(p):
     """Elem : str"""
+    
     
     
 def p_MultiCode(p):
