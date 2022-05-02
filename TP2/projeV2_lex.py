@@ -1,16 +1,19 @@
 import ply.lex as lex
 
 literals = ['(', ')', ',', '[', ']', ':', '{', '}', '.']
-tokens = ['LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR', 'CODELINE', 'OPENCODE', 'MCODE','CLOSECODE', 'str', 'id', 'int']
-states = [("MULTILINECODE","exclusive")]
+tokens = ['LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR', 'CODELINE', 'OPENCODELINE', 'OPENCODE', 'MCODE',
+          'CLOSECODE', 'COMENTARY', 'str', 'id', 'int']
+states = [("MULTILINECODE", "exclusive"),
+          ("LINECODE", "exclusive")]
+
 
 def t_LEXINIT(t):
-    r"""%%[ ]*LEX[ ]*\n"""
+    r"""%%[ ]*LEX[ ]*"""
     return t
 
 
 def t_YACCINIT(t):
-    r"""%%[ ]*YACC[ ]*\n"""
+    r"""%%[ ]*YACC[ ]*"""
     return t
 
 
@@ -30,22 +33,31 @@ def t_OPERATOR(t):
 
 
 def t_OPENCODE(t):
-    r"""%\* \s*"""
+    r"""%\*"""
     t.lexer.begin('MULTILINECODE')
     return t
 
-
-def t_CODELINE(t):
-    r"""%[^\n]*?\n"""
-    return t
 
 def t_MULTILINECODE_CLOSECODE(t):
     r"""\*%"""
     t.lexer.begin('INITIAL')
     return t
 
+
 def t_MULTILINECODE_MCODE(t):
-    r"""(.+\n*)+?"""
+    r"""\n*(.+\n*)+?"""
+    return t
+
+
+def t_OPENCODELINE(t):
+    r"""%"""
+    t.lexer.begin('LINECODE')
+    return t
+
+
+def t_LINECODE_CODELINE(t):
+    r"""[^\n]*\n"""
+    t.lexer.begin('INITIAL')
     return t
 
 
@@ -71,9 +83,9 @@ def t_int(t):
     return t
 
 
-
 t_ignore = " \t\n"
 t_MULTILINECODE_ignore = ""
+t_LINECODE_ignore = ""
 
 
 def t_error(t):
@@ -82,6 +94,11 @@ def t_error(t):
 
 
 def t_MULTILINECODE_error(t):
+    print(f"ERROR: Illegal char '{t.value[0]}' at position multiline")
+    t.lexer.skip(1)
+
+
+def t_LINECODE_error(t):
     print(f"ERROR: Illegal char '{t.value[0]}' at position multiline")
     t.lexer.skip(1)
 
