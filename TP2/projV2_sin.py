@@ -20,7 +20,7 @@ def p_LexInput_Single(p):
 
 def p_LexLine_Codeline(p):
     """LexLine : CODELINE"""
-
+   
 
 def p_LexLine_MultiCode(p):
     """LexLine : MultiCode"""
@@ -52,7 +52,7 @@ def p_YaccLine_Codeline(p):
     
 def p_YaccLine_MultiCode(p):
     """YaccLine : MultiCode"""
-
+    
 
 def p_YaccLine_Exp(p):
     """YaccLine : id ':' Grammar '{' Code '}'"""
@@ -74,8 +74,16 @@ def p_Elem_str(p):
     """Elem : str"""
     
     
-def p_MultiCode_(p):
-    """MultiCode : OPENCODE MCODE"""
+def p_MultiCode(p):
+    """MultiCode : OPENCODE MCode CLOSECODE"""
+    
+
+def p_MCode(p):
+    """MCode : MCode MCODE """
+    
+    
+def p_MCode_empty(p):
+    """MCode : """
     
 
 def p_Code_exp(p):

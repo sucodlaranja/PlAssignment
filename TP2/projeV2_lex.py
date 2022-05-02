@@ -1,7 +1,7 @@
 import ply.lex as lex
 
 literals = ['(', ')', ',', '[', ']', ':', '{', '}', '.']
-tokens = ['LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR', 'CODELINE', 'OPENCODE', 'MCODE', 'str', 'id', 'int']
+tokens = ['LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR', 'CODELINE', 'OPENCODE', 'MCODE','CLOSECODE', 'str', 'id', 'int']
 states = [("MULTILINECODE","exclusive")]
 
 def t_LEXINIT(t):
@@ -39,10 +39,13 @@ def t_CODELINE(t):
     r"""%[^\n]*?\n"""
     return t
 
+def t_MULTILINECODE_CLOSECODE(t):
+    r"""\*%"""
+    t.lexer.begin('INITIAL')
+    return t
 
 def t_MULTILINECODE_MCODE(t):
-    r"""\n*(.+\n?)+\n*(\*%)"""
-    t.lexer.begin('INITIAL')
+    r"""(.+\n*)+?"""
     return t
 
 

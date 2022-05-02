@@ -8,7 +8,6 @@
 error(f"Illegal character {t.value[0]}, [{t.lexer.lineno}]",t.lexer.skip(1) )
 
 %*
-
 precedence = [
 (’left’,’+’,’-’),
 (’left’,’*’,’/’),
@@ -34,7 +33,6 @@ exp : VAR { t[0] = getval(t[1]) }
 
 
 %*
-
 def ola():
     gfsfdg
     print(ola)
