@@ -144,17 +144,28 @@ def p_Codeline(p):
 
 
 def p_MCode(p):
-    """MCode : MCode MCODE """
+    """MCode : MCode CodeOrComment """
     p[0] = p[1] + p[2]
+    
+    
+def p_CodeOrComment_Comment(p):
+    """CodeOrComment : MultiComment"""
+    p[0] = p[1]
 
-
+def p_CodeOrComment_Code(p):
+    """CodeOrComment : MCODE"""
+    p[0] = p[1]
+    
+    
 def p_MCode_empty(p):
     """MCode : """
     p[0] = ""
     
+    
 def p_MultiComment(p):
     """MultiComment : OPENCOMMENT MComment CLOSECOMMENT"""
     p[0] = p[2]
+
 
 def p_MComment(p):
     """MComment : MComment MCOMMENT"""

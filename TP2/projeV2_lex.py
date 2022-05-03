@@ -47,6 +47,13 @@ def t_MULTILINECODE_CLOSECODE(t):
     return t
 
 
+def t_MULTILINECODE_OPENCOMMENT(t):
+    r"""\n*\#\*"""
+    lexer.laststate = 'MULTILINECODE'
+    t.lexer.begin('MULTICOMMENT')
+    return t
+
+
 def t_MULTILINECODE_MCODE(t):
     r"""\n*(.+\n*)+?"""
     return t
@@ -72,7 +79,8 @@ def t_OPENCOMMENT(t):
 
 def t_MULTICOMMENT_CLOSECOMMENT(t):
     r"""\*\#"""
-    t.lexer.begin('INITIAL')
+    t.lexer.begin(lexer.laststate)
+    lexer.laststate = 'INITIAL'
     return t
 
 
@@ -128,3 +136,4 @@ def t_MULTICOMMENT_error(t):
 
 
 lexer = lex.lex()
+lexer.laststate = "INITIAL"
