@@ -1,10 +1,13 @@
 import ply.lex as lex
 
 literals = ['(', ')', ',', '[', ']', ':', '{', '}', '.']
-tokens = ['LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR', 'CODELINE', 'OPENCODELINE', 'OPENCODE', 'MCODE',
-          'CLOSECODE', 'COMENTARY', 'str', 'id', 'int']
+tokens = ['LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR', 'CODELINE', 'OPENCODELINE', 'OPENCODE', 'MCODE','CLOSECODE', 
+          'OPENCOMMENT', 'MCOMMENT', 'CLOSECOMMENT',
+          'COMENTARY', 'str', 'id', 'int']
+
 states = [("MULTILINECODE", "exclusive"),
-          ("LINECODE", "exclusive")]
+          ("LINECODE", "exclusive"),
+          ("MULTICOMMENT","exclusive")]
 
 
 def t_LEXINIT(t):
@@ -61,6 +64,22 @@ def t_LINECODE_CODELINE(t):
     return t
 
 
+def t_OPENCOMMENT(t):
+    r"""\#\*"""
+    t.lexer.begin('MULTICOMMENT')
+    return t
+
+
+def t_MULTICOMMENT_CLOSECOMMENT(t):
+    r"""\*\#"""
+    t.lexer.begin('INITIAL')
+    return t
+
+
+def t_MULTICOMMENT_MCOMMENT(t):
+    r"""(.+\n*)+?"""
+    return t
+
 def t_str(t):
     r"""
     [fr]?
@@ -86,6 +105,7 @@ def t_int(t):
 t_ignore = " \t\n"
 t_MULTILINECODE_ignore = ""
 t_LINECODE_ignore = ""
+t_MULTICOMMENT_ignore = "\n"
 
 
 def t_error(t):
@@ -99,7 +119,11 @@ def t_MULTILINECODE_error(t):
 
 
 def t_LINECODE_error(t):
-    print(f"ERROR: Illegal char '{t.value[0]}' at position multiline")
+    print(f"ERROR: Illegal char '{t.value[0]}' at position linecode")
+    t.lexer.skip(1)
+    
+def t_MULTICOMMENT_error(t):
+    print(f"ERROR: Illegal char '{t.value[0]}' at position multicomment")
     t.lexer.skip(1)
 
 

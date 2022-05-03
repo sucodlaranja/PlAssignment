@@ -27,4 +27,4 @@ def test(a):
             print("Programa inválido ... Corrija e tente novamente!")
 
 
-test(2)
+test(0)

@@ -47,6 +47,11 @@ def p_LexLine_MultiCode(p):
     p[0] = p[1]
 
 
+def p_LexLine_MultiComment(p):
+    """LexLine : MultiComment"""
+    p[0] = p[1]
+
+
 def p_LexLine_Return(p):
     """LexLine : str RETURN '(' str ',' Code ')'"""
     p[0] = "\n\ndef t_" + p[4][1:-1] + "(t):\n" \
@@ -88,6 +93,10 @@ def p_YaccLine_Codeline(p):
 
 def p_YaccLine_MultiCode(p):
     """YaccLine : MultiCode"""
+    p[0] = p[1]
+    
+def p_YaccLine__MultiComment(p):
+    """YaccLine : MultiComment"""
     p[0] = p[1]
 
 
@@ -141,6 +150,18 @@ def p_MCode(p):
 
 def p_MCode_empty(p):
     """MCode : """
+    p[0] = ""
+    
+def p_MultiComment(p):
+    """MultiComment : OPENCOMMENT MComment CLOSECOMMENT"""
+    p[0] = p[2]
+
+def p_MComment(p):
+    """MComment : MComment MCOMMENT"""
+    p[0] =  p[1] + "#" + p[2]
+
+def p_MComment_empty(p):
+    """MComment : """
     p[0] = ""
 
 
