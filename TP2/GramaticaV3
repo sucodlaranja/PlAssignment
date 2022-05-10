@@ -1,31 +1,81 @@
-PlySimple -> LexGroup YaccGroup
+PlySimple -> Filename LexGroup YaccGroup
+
+Filename -> str
+          |
 
 LexGroup -> LEXINIT LexInput
 
 LexInput -> LexInput LexLine
           | LexLine
 
-LexLine -> CODELINE
-         | str RETURN '(' '’' id '’' ',' Code ')'
-         | str ERROR '(' str ',' Code ')'
+LexLine -> PythonCode
+         | str RETURN '(' ReturnArgs ')'
+         | ERROR '(' ErrorArgs ')'
+         | LITERALS '=' str
+         | IGNORE '=' str
+         | TOKENS '=' Code
+         | PRECEDENCE '=' Code
+         | STATES '=' '[' StatesArgs ']'
+
+StateArgs -> '(' str ',' str ')' ',' StatesArgs
+           | '(' str ',' str ')'
+           |
+
+ReturnArgs -> OtherComands ',' Code
+            | OtherComands ','
+            | Code
+            |
+
+ErrorArgs -> str ',' OtherComands
+           | ',' OtherComands
+
+OtherComands -> Code ',' OtherComands
+             | Code
 
 YaccGroup -> YACCINIT YaccInput
 
 YaccInput -> YaccInput YaccLine
           | YaccLine
 
-YaccLine -> CODELINE
+YaccLine -> PythonCode
           | id ':' Grammar '{' Code '}'
+          | PRECEDENCE '=' Code
+
+PythonCode -> Codeline
+            | MultiCode
+            | COMENTARY
+            | MultiComment
 
 Grammar -> Grammar Elem
-         | €
+         |
 
 Elem -> id
       | str
 
+Codeline -> OPENCODELINE CODELINE
+
+MultiCode -> OPENCODE MCode CLOSECODE
+
+MCode -> MCode CodeOrComment
+       |
+
+CodeOrComment -> MultiComment
+               | TEXT
+
+MultiComment -> OPENCOMMENT TEXT CLOSECOMMENT
+              | OPENCOMMENT CLOSECOMMENT
+
 Code -> Code OPERATOR Exp
+      | Code '=' Exp
       | Exp '.' Exp
+      | '[' ListContent ']'
+      | '(' ListContent ')'
       | Exp
+      | str
+
+ListContent -> Code ',' ListContent
+             | Code
+             |
 
 Exp -> id '(' Code ')'
      | id '[' Code ']'

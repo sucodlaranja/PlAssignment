@@ -17,7 +17,7 @@ precedence = [
 ]
 *%
 
-%# symboltable : dictionary of variables
+# symboltable : dictionary of variables
 %ts = { }
 
 stat : VAR ’=’ exp { ts[t[1]] = t[3] }

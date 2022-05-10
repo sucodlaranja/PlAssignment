@@ -1,13 +1,38 @@
 import ply.lex as lex
 
-literals = ['(', ')', ',', '[', ']', ':', '{', '}', '.']
-tokens = ['LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR', 'CODELINE', 'OPENCODELINE', 'OPENCODE', 'MCODE','CLOSECODE', 
-          'OPENCOMMENT', 'MCOMMENT', 'CLOSECOMMENT',
+literals = ['(', ')', ',', '[', ']', ':', '{', '}', '.', '=']
+tokens = ['LITERALS', 'IGNORE', 'TOKENS', 'LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR', 'CODELINE', 'OPENCODELINE', 'OPENCODE', 'TEXT','CLOSECODE',
+          'OPENCOMMENT', 'MCOMMENT', 'CLOSECOMMENT', 'PRECEDENCE', 'STATES',
           'COMENTARY', 'str', 'id', 'int']
 
 states = [("MULTILINECODE", "exclusive"),
           ("LINECODE", "exclusive"),
-          ("MULTICOMMENT","exclusive")]
+          ("MULTICOMMENT", "exclusive")]
+
+
+def t_LITERALS(t):
+    r"""literals"""
+    return t
+
+
+def t_STATES(t):
+    r"""states"""
+    return t
+
+
+def t_PRECEDENCE(t):
+    r"""precedence"""
+    return t
+
+
+def t_IGNORE(t):
+    r"""ignore(_[a-zA-Z_]\w*)?"""
+    return t
+
+
+def t_TOKENS(t):
+    r"""tokens"""
+    return t
 
 
 def t_LEXINIT(t):
@@ -31,7 +56,7 @@ def t_ERROR(t):
 
 
 def t_OPERATOR(t):
-    r"""[=\+\*\-/]"""
+    r"""[\+\*\-/]"""
     return t
 
 
@@ -54,8 +79,10 @@ def t_MULTILINECODE_OPENCOMMENT(t):
     return t
 
 
-def t_MULTILINECODE_MCODE(t):
-    r"""\n*(.+\n*)+?"""
+def t_MULTILINECODE_TEXT(t):
+    r"""([^\#\%](\*)+[^\#\%]|[^\*](\#)+[^\*]|[^\*](\%)+[^\*]|
+    ^[\#\%][^\*]|[^\*][\#\%]$|^[\*][^\#\%]|[^\#\%](\*)$|
+    [^\*\%\#])+"""
     return t
 
 
@@ -85,8 +112,14 @@ def t_MULTICOMMENT_CLOSECOMMENT(t):
 
 
 def t_MULTICOMMENT_MCOMMENT(t):
-    r"""(.+\n*)+?"""
+    r"""(\*[^\#]|\*$|^\#|[^\*]\#|[^\*\#])+"""
     return t
+
+
+def t_COMENTARY(t):
+    r"""\#.*"""
+    return t
+
 
 def t_str(t):
     r"""
@@ -129,7 +162,8 @@ def t_MULTILINECODE_error(t):
 def t_LINECODE_error(t):
     print(f"ERROR: Illegal char '{t.value[0]}' at position linecode")
     t.lexer.skip(1)
-    
+
+
 def t_MULTICOMMENT_error(t):
     print(f"ERROR: Illegal char '{t.value[0]}' at position multicomment")
     t.lexer.skip(1)
