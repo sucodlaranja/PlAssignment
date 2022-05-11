@@ -55,7 +55,8 @@ def p_LexLine_PythonCode(p):
 
 def p_LexLine_Return(p):
     """LexLine : str RETURN '(' str ',' ReturnArgs ')'"""
-    p[0] = "\n\ndef t_" + p[4][1:][:-1] + "(t):\n" + "    r" + p[1] + "\n" + p[6]
+    p[0] = "\n\ndef t_" + p[4][1:][:-1] + \
+        "(t):\n" + "    r" + p[1] + "\n" + p[6]
 
 
 def p_LexLine_Error(p):
@@ -193,6 +194,12 @@ def p_YaccInput_Single(p):
 def p_YaccLine_PythonCode(p):
     """YaccLine : PythonCode"""
     p[0] = p[1]
+
+
+def p_YaccLine_Precedence(p):
+    """YaccLine : PRECEDENCE '=' Code"""
+    p[0] = ""
+    yacc_content["Precedence"] = p[3]
 
 
 def p_YaccLine_Exp(p):
@@ -341,6 +348,7 @@ def p_Code_Operator_exp(p):
     """Code : OPERATOR Exp """
     p[0] = p[1] + p[2]
 
+
 def p_Code_str(p):
     """Code : str"""
     p[0] = p[1]
@@ -397,9 +405,6 @@ def p_error(p):
 # Build the parser
 parser = yacc.yacc()
 
-# Read line from input and parse it
-f = open("teste2.txt", "r", encoding="utf-8")
-
 
 # Lex content dictionary
 lex_content = {}
@@ -408,22 +413,22 @@ lex_content = {}
 yacc_content = {}
 
 # Name of the project
-parser.filename = "no_name"
+parser.filename = ""
 
 
 parser.success = True
 parser.cc = 0
-program = f.read()
-parser.parse(program)
-
-if parser.success:
-
-    lex_file = open(parser.filename + "_lex.py", "w")
-    lex_file.write(lex_content["Code"])
 
 
-    yacc_file = open(parser.filename + "_sin.py", "w")
-    yacc_file.write(yacc_content["Code"])
+def readFile(filename):
 
-else:
-    print("Programa inválido ... Corrija e tente novamente!")
+    # Read line from input and parse it
+    f = open(filename, "r", encoding="utf-8")
+    program = f.read()
+    parser.parse(program)
+    if parser.filename == "":
+        parser.filename = filename.split(".")[0]
+    if parser.success:
+        return parser.filename, lex_content, yacc_content
+    else:
+        print("Programa inválido ... Corrija e tente novamente!")
