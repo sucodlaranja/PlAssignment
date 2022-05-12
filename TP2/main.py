@@ -27,14 +27,16 @@ def makeLex(filename, diclexar):
     if "Literals" in diclexar.keys():
         lexar += "literals = " + diclexar["Literals"] + "\n"
     if "Tokens" in diclexar.keys():
-        lexar += "tokens = " + diclexar["Tokens"] + "\n\n"
+        lexar += "tokens = " + diclexar["Tokens"].replace("’", "'") + "\n\n"
     if "States" in diclexar.keys():
         lexar += "states = ["
         for keyState in diclexar["States"]:
-            lexar += "(" + keyState + "," + diclexar["States"][keyState] + "),"
+            lexar += "(" + keyState + "," + \
+                diclexar["States"][keyState].replace("’", "'") + "),"
         lexar = lexar[:-1] + "]\n\n"
     if "Precedence" in diclexar.keys():
-        lexar += "precedence = " + diclexar["Precedence"] + "\n\n"
+        lexar += "precedence = " + \
+            diclexar["Precedence"].replace("’", "'") + "\n\n"
     if "Code" in diclexar.keys():
         lexar += diclexar["Code"] + "\n"
     if "Ignore" in diclexar.keys():
@@ -55,17 +57,29 @@ def makeLex(filename, diclexar):
 
 
 def makeYacc(filename, dicyacc):
-    if directory:
-        f = open(directory + separator + filename + "_yacc.py", "w")
+    if dicyacc:
+        if directory:
+            f = open(directory + separator + filename + "_yacc.py", "w")
+        else:
+            f = open(filename + "_yacc.py", "w")
+        yacc = "import ply.yacc as yacc\nimport sys\n"
+        yacc += "from " + filename + "_lex import " + "tokens, literals\n"
+        if "Precedence" in dicyacc.keys():
+            yacc += "precedence = " + dicyacc["Precedence"].replace("’", "'")
+        if "Code" in dicyacc.keys():
+            yacc += dicyacc["Code"]
+
+        yacc += "\nparser = yacc.yacc()\n"
+        yacc += """
+for linha in sys.stdin:
+    parser.success = True
+    parser.total = 0
+    parser.parse(linha)
+    if parser.success:
+        print("Frase válida!")
     else:
-        f = open(filename + "_yacc.py", "w")
-    yacc = "import ply.yacc as yacc\n"
-    yacc += "from " + filename + "_lex import " + "tokens, literals\n"
-    if "Precedence" in dicyacc.keys():
-        yacc += "precedence = " + dicyacc["Precedence"]
-    if "Code" in dicyacc.keys():
-        yacc += dicyacc["Code"]
-    f.write(yacc)
+        print("Frase inválida... Corrija e tente novamente!")"""
+        f.write(yacc)
 
 
 def interpretador():
