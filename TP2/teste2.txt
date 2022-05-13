@@ -30,8 +30,8 @@ precedence = [
 (’right’,’UMINUS’),
 ]
 #*
-Este trabalho foi 
-feito em 
+Este trabalho foi
+feito em
 yacccc
 *#
 
@@ -69,7 +69,7 @@ def getval(n):
 
 
 #*
-inicializacao do 
+inicializacao do
 yacc
 *#
 y = yacc.yacc()

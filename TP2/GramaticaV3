@@ -4,6 +4,8 @@ Filename -> str
           |
 
 LexGroup -> LEXINIT LexInput
+          | LEXINIT
+          |
 
 LexInput -> LexInput LexLine
           | LexLine
@@ -33,6 +35,8 @@ OtherComands -> Code ',' OtherComands
              | Code
 
 YaccGroup -> YACCINIT YaccInput
+           | YACCINIT
+           |
 
 YaccInput -> YaccInput YaccLine
           | YaccLine

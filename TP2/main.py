@@ -12,7 +12,7 @@ if os.name == "nt":
 
 
 def makefolder(filename, diclex, dicyacc):
-    if(not os.path.exists(directory)):
+    if not os.path.exists(directory):
         os.mkdir(directory)
     makeYacc(filename, dicyacc)
     makeLex(filename, diclex)

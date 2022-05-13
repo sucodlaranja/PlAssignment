@@ -23,9 +23,21 @@ def p_Filename_Empty(p):
 
 
 # LexGroup -> LEXINIT LexInput
-def p_LexGroup(p):
+#           | LEXINIT
+#           |
+def p_LexGroup_Input(p):
     """LexGroup : LEXINIT LexInput"""
     p[0] = p[2]
+
+
+def p_LexGroup_Just_Init(p):
+    """LexGroup : LEXINIT"""
+    p[0] = ""
+
+
+def p_LexGroup_Empty(p):
+    """LexGroup : """
+    p[0] = ""
 
 
 # LexInput -> LexInput LexLine
@@ -172,9 +184,21 @@ def p_OtherComands_Code(p):
 
 
 # YaccGroup -> YACCINIT YaccInput
-def p_YaccGroup(p):
+#            | YACCINIT
+#            |
+def p_YaccGroup_Input(p):
     """YaccGroup : YACCINIT YaccInput"""
     p[0] = p[2]
+
+
+def p_YaccGroup_Just_Init(p):
+    """YaccGroup : YACCINIT"""
+    p[0] = ""
+
+
+def p_YaccGroup_Empty(p):
+    """YaccGroup : """
+    p[0] = ""
 
 
 # YaccInput -> YaccInput YaccLine
