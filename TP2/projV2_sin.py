@@ -218,7 +218,7 @@ def p_YaccInput_Single(p):
 
 
 # YaccLine -> PythonCode
-#           | id ':' Grammar '{' Code '}'
+#           | id ':' Grammar '{' ListContent '}'
 def p_YaccLine_PythonCode(p):
     """YaccLine : PythonCode"""
     p[0] = p[1]
@@ -231,11 +231,35 @@ def p_YaccLine_Precedence(p):
 
 
 def p_YaccLine_Exp(p):
-    """YaccLine : id ':' Grammar '{' Code '}'"""
-    p[0] = "\n\ndef p_" + p[1] + "_" + str(parser.cc) + "(p):\n" \
+    """YaccLine : id ':' Grammar '{' GrammarComands '}'"""
+    grammar_id = p[1]
+    if grammar_id in parser.grammar_entries.keys():
+        parser.grammar_entries[grammar_id] += 1
+        cc = '_' + str(parser.grammar_entries[grammar_id])
+    else:
+        parser.grammar_entries[grammar_id] = 1
+        cc = ""
+
+    p[0] = "\n\ndef p_" + p[1] + cc + "(p):\n" \
            + "    \"" + p[1] + " :" + p[3] + "\"\n" \
-           + "    " + p[5] + "\n"
-    parser.cc += 1
+           + p[5]
+
+# GrammarComands -> Code ',' GrammarComands
+#                 | Code
+#                 |
+def p_GrammarComands_List(p):
+    """GrammarComands : GrammarComands ',' Code"""
+    p[0] = p[1] + "    " + p[3] + "\n"
+
+
+def p_GrammarComands_Code(p):
+    """GrammarComands : Code"""
+    p[0] = "    " + p[1] + "\n"
+
+
+def p_GrammarComands_Empty(p):
+    """GrammarComands :"""
+    p[0] = ""
 
 
 # PythonCode -> Codeline
@@ -328,7 +352,7 @@ def p_MultiComment_Coment(p):
     """MultiComment : OPENCOMMENT MCOMMENT CLOSECOMMENT"""
     p[0] = ""
     for line in p[2].split('\n'):
-        p[0] += "#" + line + "\n"
+        p[0] += "# " + line + "\n"
 
 
 def p_MultiComment_Empty(p):
@@ -344,12 +368,12 @@ def p_MultiComment_Empty(p):
 #       | Exp
 def p_Code_Operator(p):
     """Code : Code OPERATOR Exp"""
-    p[0] = p[1] + p[2] + p[3]
+    p[0] = p[1] + " " + p[2] + " " + p[3]
 
 
 def p_Code_Equal(p):
     """Code : Code '=' Exp"""
-    p[0] = p[1] + p[2] + p[3]
+    p[0] = p[1] + " " + p[2] + " " + p[3]
 
 
 def p_Code_Point(p):
@@ -444,13 +468,16 @@ yacc_content = {}
 parser.filename = ""
 
 
+# Dic to construct grammar
+parser.grammar_entries = {}
+
+
 # Booleans to certify "emptyness"
 parser.is_lex_empty = False
 parser.is_yacc_empty = False
 
 
 parser.success = True
-parser.cc = 0
 
 
 def readFile(filename):
@@ -462,6 +489,7 @@ def readFile(filename):
     if parser.filename == "":
         parser.filename = filename.split(".")[0]
     if parser.success:
+        print(parser.grammar_entries)
         return parser.filename, lex_content, yacc_content, parser.is_lex_empty, parser.is_yacc_empty
     else:
         print("Programa inválido ... Corrija e tente novamente!")

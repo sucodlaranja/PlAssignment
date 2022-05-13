@@ -39,7 +39,7 @@ yacccc
 %ts = { }
 
 stat : VAR '=' exp { ts[p[1]] = p[3] }
-stat : exp { print(p[1]) }
+stat : exp { print(p[1]), print("ola") }
 exp : exp '+' exp { p[0] = p[1] + p[3] }
 exp : exp '-' exp { p[0] = p[1] - p[3] }
 exp : exp '*' exp { p[0] = p[1] * p[3] }

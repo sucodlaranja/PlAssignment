@@ -2,7 +2,6 @@ from os.path import exists
 import sys
 import os
 from tokenize import Ignore
-
 from pygments import lex
 from projV2_sin import readFile
 separator = "/"
@@ -87,7 +86,7 @@ def interpretador():
     print("Please insert the filepath: ", end="")
     file = input()
 
-    while(not exists(file)):
+    while not exists(file):
         print("This file does not exists")
         print("Please insert the filepath: ", end="")
         file = input()
@@ -111,7 +110,7 @@ def main():
     global directory
 
     if len(sys.argv) == 2:
-        if(exists(sys.argv[1])):
+        if exists(sys.argv[1]):
             print(sys.argv[1])
             filename, diclex, dicyacc = readFile(sys.argv[1])
             makeLex(filename, diclex)
@@ -122,7 +121,7 @@ def main():
 
     elif len(sys.argv) == 3:
         directory = sys.argv[2]
-        if(exists(sys.argv[1])):
+        if exists(sys.argv[1]):
             filename, diclex, dicyacc = readFile(sys.argv[1])
             makefolder(filename, diclex, dicyacc)
         else:

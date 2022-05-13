@@ -42,8 +42,12 @@ YaccInput -> YaccInput YaccLine
           | YaccLine
 
 YaccLine -> PythonCode
-          | id ':' Grammar '{' Code '}'
+          | id ':' Grammar '{' GrammarComands '}'
           | PRECEDENCE '=' Code
+
+GrammarComands -> Code ',' GrammarComands
+                | Code
+                |
 
 PythonCode -> Codeline
             | MultiCode
