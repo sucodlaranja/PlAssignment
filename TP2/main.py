@@ -92,15 +92,15 @@ def interpretador():
         print("Please insert the filepath: ", end="")
         file = input()
 
-    if(not directory):
+    if not directory:
         print("Would you like to save the files in a folder? [y/n]")
         answer = input()
         if answer.lower() == ("y" or "yes" or "sim" or "s"):
             print("Please insert folder's name:", end="")
             directory = input()
 
-    filename, diclex, dicyacc = readFile(file)
-    if(directory):
+    filename, diclex, dicyacc, is_lex_empty, is_yacc_empty = readFile(file)
+    if directory:
         makefolder(filename, diclex, dicyacc)
     else:
         makeLex(filename, diclex)

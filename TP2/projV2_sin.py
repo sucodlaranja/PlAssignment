@@ -32,11 +32,13 @@ def p_LexGroup_Input(p):
 
 def p_LexGroup_Just_Init(p):
     """LexGroup : LEXINIT"""
+    parser.is_lex_empty = True
     p[0] = ""
 
 
 def p_LexGroup_Empty(p):
     """LexGroup : """
+    parser.is_lex_empty = True
     p[0] = ""
 
 
@@ -193,11 +195,13 @@ def p_YaccGroup_Input(p):
 
 def p_YaccGroup_Just_Init(p):
     """YaccGroup : YACCINIT"""
+    parser.is_yacc_empty = True
     p[0] = ""
 
 
 def p_YaccGroup_Empty(p):
     """YaccGroup : """
+    parser.is_yacc_empty = True
     p[0] = ""
 
 
@@ -440,6 +444,11 @@ yacc_content = {}
 parser.filename = ""
 
 
+# Booleans to certify "emptyness"
+parser.is_lex_empty = False
+parser.is_yacc_empty = False
+
+
 parser.success = True
 parser.cc = 0
 
@@ -453,6 +462,6 @@ def readFile(filename):
     if parser.filename == "":
         parser.filename = filename.split(".")[0]
     if parser.success:
-        return parser.filename, lex_content, yacc_content
+        return parser.filename, lex_content, yacc_content, parser.is_lex_empty, parser.is_yacc_empty
     else:
         print("Programa inválido ... Corrija e tente novamente!")
