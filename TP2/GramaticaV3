@@ -11,8 +11,9 @@ LexInput -> LexInput LexLine
           | LexLine
 
 LexLine -> PythonCode
-         | str RETURN '(' ReturnArgs ')'
+         | str RETURN '(' id ',' ReturnArgs ')'
          | ERROR '(' ErrorArgs ')'
+         | id ERROR '(' ErrorArgs ')'
          | LITERALS '=' str
          | IGNORE '=' str
          | TOKENS '=' Code
@@ -30,6 +31,8 @@ ReturnArgs -> OtherComands ',' Code
 
 ErrorArgs -> str ',' OtherComands
            | ',' OtherComands
+           | str
+           |
 
 OtherComands -> Code ',' OtherComands
              | Code
@@ -42,8 +45,10 @@ YaccInput -> YaccInput YaccLine
           | YaccLine
 
 YaccLine -> PythonCode
-          | id ':' Grammar '{' GrammarComands '}'
           | PRECEDENCE '=' Code
+          | id ':' Grammar '{' GrammarComands '}'
+          | id ':' Grammar '{' GrammarComands '}' id
+
 
 GrammarComands -> Code ',' GrammarComands
                 | Code

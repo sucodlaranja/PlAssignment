@@ -98,7 +98,7 @@ def interpretador():
             print("Please insert folder's name:", end="")
             directory = input()
 
-    filename, diclex, dicyacc, is_lex_empty, is_yacc_empty = readFile(file)
+    filename, diclex, dicyacc = readFile(file)
     if directory:
         makefolder(filename, diclex, dicyacc)
     else:

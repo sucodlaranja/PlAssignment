@@ -19,9 +19,10 @@ states = [("MULTILINECODE", "exclusive"),
 
 
 
-'[a-zA-Z_][a-zA-Z0-9_]*' return('VAR', x = 2, t.value)
-'\d+(\.\d+)?'            return('NUMBER',)
+'[a-zA-Z_][a-zA-Z0-9_]*' return(VAR, x = 2, t.value)
+'\d+(\.\d+)?'            return(NUMBER,)
 error(f"Illegal character '{t.value[0]}', [{t.lexer.lineno}]",t.lexer.skip(1) )
+Linecode error(f"ola")
 
 %% YACC
 precedence = [

@@ -32,13 +32,13 @@ def p_LexGroup_Input(p):
 
 def p_LexGroup_Just_Init(p):
     """LexGroup : LEXINIT"""
-    parser.is_lex_empty = True
+    lex_content["empty"] = True
     p[0] = ""
 
 
 def p_LexGroup_Empty(p):
     """LexGroup : """
-    parser.is_lex_empty = True
+    lex_content["empty"] = True
     p[0] = ""
 
 
@@ -55,8 +55,9 @@ def p_LexInput_Single(p):
 
 
 # LexLine -> PythonCode
-#          | str RETURN '(' str ',' ReturnArgs ')'
+#          | str RETURN '(' id ',' ReturnArgs ')'
 #          | ERROR '(' ErrorArgs ')'
+#          | id ERROR '(' ErrorArgs ')'
 #          | LITERALS '=' str
 #          | IGNORE '=' str
 #          | TOKENS '=' Code
@@ -68,14 +69,19 @@ def p_LexLine_PythonCode(p):
 
 
 def p_LexLine_Return(p):
-    """LexLine : str RETURN '(' str ',' ReturnArgs ')'"""
-    p[0] = "\n\ndef t_" + p[4][1:][:-1] + \
+    """LexLine : str RETURN '(' id ',' ReturnArgs ')'"""
+    p[0] = "\n\ndef t_" + p[4] + \
         "(t):\n" + "    r" + p[1] + "\n" + p[6]
 
 
 def p_LexLine_Error(p):
     """LexLine : ERROR '(' ErrorArgs ')'"""
     p[0] = "\n\ndef t_error(t):\n" + p[3]
+
+
+def p_LexLine_Error_State(p):
+    """LexLine : id ERROR '(' ErrorArgs ')'"""
+    p[0] = "\n\ndef t_error_" + p[1] + "(t):\n" + p[4]
 
 
 def p_LexLine_Literals(p):
@@ -163,6 +169,8 @@ def p_ReturnArgs_Empty(p):
 
 # ErrorArgs -> str ',' OtherComands
 #            | ',' OtherComands
+#            | str
+#            |
 def p_ErrorArgs_Print(p):
     """ErrorArgs : str ',' OtherComands"""
     p[0] = "    print(" + p[1] + ")\n" + p[3]
@@ -171,6 +179,16 @@ def p_ErrorArgs_Print(p):
 def p_ErrorArgs_No_Print(p):
     """ErrorArgs : ',' OtherComands"""
     p[0] = p[2]
+
+
+def p_ErrorArgs_Only_Print(p):
+    """ErrorArgs : str"""
+    p[0] = "    print(" + p[1] + ")\n"
+
+
+def p_ErrorArgs_empty(p):
+    """ErrorArgs : """
+    p[0] = ""
 
 
 # OtherComands -> Code ',' OtherComands
@@ -195,13 +213,13 @@ def p_YaccGroup_Input(p):
 
 def p_YaccGroup_Just_Init(p):
     """YaccGroup : YACCINIT"""
-    parser.is_yacc_empty = True
+    yacc_content["empty"] = True
     p[0] = ""
 
 
 def p_YaccGroup_Empty(p):
     """YaccGroup : """
-    parser.is_yacc_empty = True
+    yacc_content["empty"] = True
     p[0] = ""
 
 
@@ -218,7 +236,9 @@ def p_YaccInput_Single(p):
 
 
 # YaccLine -> PythonCode
-#           | id ':' Grammar '{' ListContent '}'
+#           | PRECEDENCE '=' Code
+#           | id ':' Grammar '{' GrammarComands '}'
+#           | id ':' Grammar '{' GrammarComands '}' id
 def p_YaccLine_PythonCode(p):
     """YaccLine : PythonCode"""
     p[0] = p[1]
@@ -243,6 +263,21 @@ def p_YaccLine_Exp(p):
     p[0] = "\n\ndef p_" + p[1] + cc + "(p):\n" \
            + "    \"" + p[1] + " :" + p[3] + "\"\n" \
            + p[5]
+
+
+def p_YaccLine_Exp_Name(p):
+    """YaccLine : id id ':' Grammar '{' GrammarComands '}'"""
+    grammar_id = p[2] + "_" + p[1]
+    if grammar_id in parser.grammar_entries.keys():
+        parser.grammar_entries[grammar_id] += 1
+        cc = grammar_id + '_' + str(parser.grammar_entries[grammar_id])
+    else:
+        parser.grammar_entries[grammar_id] = 1
+        cc = grammar_id
+
+    p[0] = "\n\ndef p_" + cc + "(p):\n" \
+           + "    \"" + p[2] + " :" + p[4] + "\"\n" \
+           + p[6]
 
 # GrammarComands -> Code ',' GrammarComands
 #                 | Code
@@ -473,8 +508,8 @@ parser.grammar_entries = {}
 
 
 # Booleans to certify "emptyness"
-parser.is_lex_empty = False
-parser.is_yacc_empty = False
+lex_content["empty"] = False
+yacc_content["empty"] = False
 
 
 parser.success = True
@@ -489,7 +524,6 @@ def readFile(filename):
     if parser.filename == "":
         parser.filename = filename.split(".")[0]
     if parser.success:
-        print(parser.grammar_entries)
-        return parser.filename, lex_content, yacc_content, parser.is_lex_empty, parser.is_yacc_empty
+        return parser.filename, lex_content, yacc_content
     else:
         print("Programa inválido ... Corrija e tente novamente!")
