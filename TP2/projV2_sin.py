@@ -55,6 +55,8 @@ def p_LexInput_Single(p):
 
 
 # LexLine -> PythonCode
+#          | MAKE
+#          | MAKE_MAIN
 #          | str RETURN '(' id ',' ReturnArgs ')'
 #          | ERROR '(' ErrorArgs ')'
 #          | id ERROR '(' ErrorArgs ')'
@@ -66,6 +68,20 @@ def p_LexInput_Single(p):
 def p_LexLine_PythonCode(p):
     """LexLine : PythonCode"""
     p[0] = p[1]
+
+
+def p_LexLine_MAKE(p):
+    """LexLine : MAKE"""
+    p[0] = "lexer = lex.lex()\n\n"
+
+
+def p_LexLine_MAKE_MAIN(p):
+    """LexLine : MAKE_MAIN"""
+    p[0] = "lexer = lex.lex()\n\n" \
+           "for line in sys.stdin:\n" \
+           "    lexer.input(line)\n" \
+           "    for tok in lexer:\n" \
+           "        print(tok)\n\n"
 
 
 def p_LexLine_Return(p):
@@ -236,12 +252,31 @@ def p_YaccInput_Single(p):
 
 
 # YaccLine -> PythonCode
+#           | MAKE
+#           | MAKE_MAIN
 #           | PRECEDENCE '=' Code
 #           | id ':' Grammar '{' GrammarComands '}'
 #           | id ':' Grammar '{' GrammarComands '}' id
 def p_YaccLine_PythonCode(p):
     """YaccLine : PythonCode"""
     p[0] = p[1]
+
+
+def p_YaccLine_MAKE(p):
+    """YaccLine : MAKE"""
+    p[0] = "parser = yacc.yacc()\n\n"
+
+
+def p_YaccLine_MAKE_MAIN(p):
+    """YaccLine : MAKE_MAIN"""
+    p[0] = "parser = yacc.yacc()\n\n" \
+           "for line in sys.stdin:\n" \
+           "    parser.success = True\n" \
+           "    parser.parse(line)\n" \
+           "    if parser.success:\n" \
+           "        print(\"Valid sentence!\")\n" \
+           "    else:\n" \
+           "        print(\"Invalid sentence... Redo and try again\")\n\n"
 
 
 def p_YaccLine_Precedence(p):

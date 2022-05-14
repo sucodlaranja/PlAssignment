@@ -24,6 +24,8 @@ states = [("MULTILINECODE", "exclusive"),
 error(f"Illegal character '{t.value[0]}', [{t.lexer.lineno}]",t.lexer.skip(1) )
 Linecode error(f"ola")
 
+make
+
 %% YACC
 precedence = [
 (’left’,’+’,’-’),
@@ -49,7 +51,6 @@ exp : '-' exp { p[0] = p[2] }
 exp : '(' exp ')' { p[0] = p[2] }
 exp : NUMBER { p[0] = p[1] }
 exp : VAR { p[0] = getval(p[1]) }
-
 
 %*
 #*
@@ -77,3 +78,5 @@ y = yacc.yacc()
 y.parse("3+4*7")
 
 *%
+
+make main

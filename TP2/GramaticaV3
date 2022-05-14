@@ -11,6 +11,8 @@ LexInput -> LexInput LexLine
           | LexLine
 
 LexLine -> PythonCode
+         | MAKE
+         | MAKE_MAIN
          | str RETURN '(' id ',' ReturnArgs ')'
          | ERROR '(' ErrorArgs ')'
          | id ERROR '(' ErrorArgs ')'
@@ -45,6 +47,8 @@ YaccInput -> YaccInput YaccLine
           | YaccLine
 
 YaccLine -> PythonCode
+          | MK_YACC
+          | MK_YACC_MAIN
           | PRECEDENCE '=' Code
           | id ':' Grammar '{' GrammarComands '}'
           | id ':' Grammar '{' GrammarComands '}' id

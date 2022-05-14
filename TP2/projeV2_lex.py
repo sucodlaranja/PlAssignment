@@ -1,13 +1,23 @@
 import ply.lex as lex
 
 literals = ['(', ')', ',', '[', ']', ':', '{', '}', '.', '=']
-tokens = ['LITERALS', 'IGNORE', 'TOKENS', 'LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR', 'CODELINE', 'OPENCODELINE', 'OPENCODE', 'TEXT','CLOSECODE',
+tokens = ['MAKE', 'MAKE_MAIN', 'LITERALS', 'IGNORE', 'TOKENS', 'LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR', 'CODELINE', 'OPENCODELINE', 'OPENCODE', 'TEXT','CLOSECODE',
           'OPENCOMMENT', 'MCOMMENT', 'CLOSECOMMENT', 'PRECEDENCE', 'STATES',
           'COMENTARY', 'str', 'id', 'int']
 
 states = [("MULTILINECODE", "exclusive"),
           ("LINECODE", "exclusive"),
           ("MULTICOMMENT", "exclusive")]
+
+
+def t_MAKE_MAIN(t):
+    r"""make[ ]*main"""
+    return t
+
+
+def t_MAKE(t):
+    r"""make"""
+    return t
 
 
 def t_LITERALS(t):
