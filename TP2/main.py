@@ -20,45 +20,47 @@ def makefolder(filename, diclex, dicyacc):
 
 
 def makeLex(filename, diclexar):
-    if directory:
-        f = open(directory + separator + filename + "_lex.py", "w")
-    else:
-        f = open(filename + "_lex.py", "w")
-    lexar = "import ply.lex as lex" + "\n\n"
-    if "Literals" in diclexar.keys():
-        lexar += "literals = " + diclexar["Literals"] + "\n"
-    if "Tokens" in diclexar.keys():
-        lexar += "tokens = " + diclexar["Tokens"].replace("’", "'") + "\n\n"
-    if "States" in diclexar.keys():
-        lexar += "states = ["
-        for keyState in diclexar["States"]:
-            lexar += "(" + keyState + "," + \
-                diclexar["States"][keyState].replace("’", "'") + "),"
-        lexar = lexar[:-1] + "]\n\n"
-    if "Precedence" in diclexar.keys():
-        lexar += "precedence = " + \
-            diclexar["Precedence"].replace("’", "'") + "\n\n"
-    if "Code" in diclexar.keys():
-        lexar += diclexar["Code"] + "\n"
-    if "Ignore" in diclexar.keys():
-        lexar += "t_ignore = " + diclexar["Ignore"] + "\n"
-    else:
-        lexar += "t_ignore = \"\""
-    if "States" in diclexar.keys() and "IgnoreStates" in diclexar.keys():
-        for key in diclexar["States"].keys():
-            writekey = key.replace("\"", "")
-            if key in diclexar["IgnoreStates"].keys():
-                lexar += "t_ignore_" + writekey + " = " + \
-                    diclexar["IgnoreStates"][key] + "\n"
-            else:
+    if not diclexar["empty"]:
+        if directory:
+            f = open(directory + separator + filename + "_lex.py", "w")
+        else:
+            f = open(filename + "_lex.py", "w")
+        lexar = "import ply.lex as lex" + "\n\n"
+        if "Literals" in diclexar.keys():
+            lexar += "literals = " + diclexar["Literals"] + "\n"
+        if "Tokens" in diclexar.keys():
+            lexar += "tokens = " + \
+                diclexar["Tokens"].replace("’", "'") + "\n\n"
+        if "States" in diclexar.keys():
+            lexar += "states = ["
+            for keyState in diclexar["States"]:
+                lexar += "(" + keyState + "," + \
+                    diclexar["States"][keyState].replace("’", "'") + "),"
+            lexar = lexar[:-1] + "]\n\n"
+        if "Precedence" in diclexar.keys():
+            lexar += "precedence = " + \
+                diclexar["Precedence"].replace("’", "'") + "\n\n"
+        if "Code" in diclexar.keys():
+            lexar += diclexar["Code"] + "\n"
+        if "Ignore" in diclexar.keys():
+            lexar += "t_ignore = " + diclexar["Ignore"] + "\n"
+        else:
+            lexar += "t_ignore = \"\""
+        if "States" in diclexar.keys() and "IgnoreStates" in diclexar.keys():
+            for key in diclexar["States"].keys():
+                writekey = key.replace("\"", "")
+                if key in diclexar["IgnoreStates"].keys():
+                    lexar += "t_ignore_" + writekey + " = " + \
+                        diclexar["IgnoreStates"][key] + "\n"
+                else:
 
-                lexar += "t_ignore_" + writekey + " = \"\"\n"
+                    lexar += "t_ignore_" + writekey + " = \"\"\n"
 
-        f.write(lexar)
+            f.write(lexar)
 
 
 def makeYacc(filename, dicyacc):
-    if dicyacc:
+    if not dicyacc["empty"]:
         if directory:
             f = open(directory + separator + filename + "_yacc.py", "w")
         else:
@@ -101,7 +103,13 @@ def interpretador():
 
 def runprocess(filename, testfile):
     catArgs = ["cat", testfile]
-    pythonArgs = ["python3", filename + "_yacc.py"]
+
+    if directory != "":
+        file = directory + separator + filename
+    else:
+        file = filename
+
+    pythonArgs = ["python3", file + "_yacc.py"]
     process1 = subprocess.Popen(catArgs, stdout=subprocess.PIPE)
     subprocess.Popen(pythonArgs, stdin=process1.stdout)
     print(process1.stdout)
@@ -124,7 +132,7 @@ def main():
         if sys.argv[2] == "-f":
             directory = sys.argv[3]
             if exists(sys.argv[1]):
-                filename, diclex, dicyacc, is_lex_empty, is_yacc_empty = readFile(
+                filename, diclex, dicyacc = readFile(
                     sys.argv[1])
                 makefolder(filename, diclex, dicyacc)
             else:
@@ -133,7 +141,7 @@ def main():
 
         elif sys.argv[2] == "-t":
             if exists(sys.argv[1]):
-                filename, diclex, dicyacc, is_lex_empty, is_yacc_empty = readFile(
+                filename, diclex, dicyacc = readFile(
                     sys.argv[1])
                 makeLex(filename, diclex)
                 makeYacc(filename, diclex)
@@ -150,7 +158,7 @@ def main():
         if sys.argv[2] == "-f":
             directory = sys.argv[3]
             if exists(sys.argv[1]):
-                filename, diclex, dicyacc, is_lex_empty, is_yacc_empty = readFile(
+                filename, diclex, dicyacc = readFile(
                     sys.argv[1])
                 makefolder(filename, diclex, dicyacc)
                 if sys.argv[4] == "-t":
@@ -162,7 +170,7 @@ def main():
         if sys.argv[4] == "-f":
             directory = sys.argv[5]
             if exists(sys.argv[1]):
-                filename, diclex, dicyacc, is_lex_empty, is_yacc_empty = readFile(
+                filename, diclex, dicyacc = readFile(
                     sys.argv[1])
                 makefolder(filename, diclex, dicyacc)
                 if sys.argv[2] == "-t":
