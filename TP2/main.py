@@ -1,4 +1,6 @@
+from concurrent.futures import process
 from os.path import exists
+import subprocess
 import sys
 import os
 from tokenize import Ignore
@@ -51,7 +53,7 @@ def makeLex(filename, diclexar):
             else:
 
                 lexar += "t_ignore_" + writekey + " = \"\"\n"
-        lexar += "\nlexer = lex.lex()"
+
         f.write(lexar)
 
 
@@ -69,15 +71,6 @@ def makeYacc(filename, dicyacc):
             yacc += dicyacc["Code"]
 
         yacc += "\nparser = yacc.yacc()\n"
-        yacc += """
-for linha in sys.stdin:
-    parser.success = True
-    parser.total = 0
-    parser.parse(linha)
-    if parser.success:
-        print("Frase válida!")
-    else:
-        print("Frase inválida... Corrija e tente novamente!")"""
         f.write(yacc)
 
 
@@ -106,6 +99,14 @@ def interpretador():
         makeYacc(filename, dicyacc)
 
 
+def runprocess(filename, testfile):
+    catArgs = ["cat", testfile]
+    pythonArgs = ["python3", filename + "_yacc.py"]
+    process1 = subprocess.Popen(catArgs, stdout=subprocess.PIPE)
+    subprocess.Popen(pythonArgs, stdin=process1.stdout)
+    print(process1.stdout)
+
+
 def main():
     global directory
 
@@ -119,13 +120,59 @@ def main():
             print("File does not exist!")
             interpretador()
 
-    elif len(sys.argv) == 3:
-        directory = sys.argv[2]
-        if exists(sys.argv[1]):
-            filename, diclex, dicyacc = readFile(sys.argv[1])
-            makefolder(filename, diclex, dicyacc)
+    elif len(sys.argv) == 4:
+        if sys.argv[2] == "-f":
+            directory = sys.argv[3]
+            if exists(sys.argv[1]):
+                filename, diclex, dicyacc, is_lex_empty, is_yacc_empty = readFile(
+                    sys.argv[1])
+                makefolder(filename, diclex, dicyacc)
+            else:
+                print(f'File {sys.argv[1]} does not exist!')
+                interpretador()
+
+        elif sys.argv[2] == "-t":
+            if exists(sys.argv[1]):
+                filename, diclex, dicyacc, is_lex_empty, is_yacc_empty = readFile(
+                    sys.argv[1])
+                makeLex(filename, diclex)
+                makeYacc(filename, diclex)
+                runprocess(filename, sys.argv[3])
+            else:
+                print(f'File {sys.argv[1]} does not exist!')
+                interpretador()
+
         else:
-            print("File does not exist!")
+            print("Invalid arguments!")
+            interpretador()
+
+    elif len(sys.argv) == 6:
+        if sys.argv[2] == "-f":
+            directory = sys.argv[3]
+            if exists(sys.argv[1]):
+                filename, diclex, dicyacc, is_lex_empty, is_yacc_empty = readFile(
+                    sys.argv[1])
+                makefolder(filename, diclex, dicyacc)
+                if sys.argv[4] == "-t":
+                    runprocess(filename, sys.argv[5])
+            else:
+                print(f'File {sys.argv[1]} does not exist!')
+                interpretador()
+
+        if sys.argv[4] == "-f":
+            directory = sys.argv[5]
+            if exists(sys.argv[1]):
+                filename, diclex, dicyacc, is_lex_empty, is_yacc_empty = readFile(
+                    sys.argv[1])
+                makefolder(filename, diclex, dicyacc)
+                if sys.argv[2] == "-t":
+                    runprocess(filename, sys.argv[3])
+            else:
+                print(f'File {sys.argv[1]} does not exist!')
+                interpretador()
+
+        else:
+            print("File does not exist or invalid arguments!")
             interpretador()
     else:
         interpretador()
