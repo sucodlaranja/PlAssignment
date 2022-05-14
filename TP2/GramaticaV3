@@ -84,17 +84,18 @@ MultiComment -> OPENCOMMENT TEXT CLOSECOMMENT
 
 Code -> Code OPERATOR Exp
       | Code '=' Exp
-      | Exp '.' Exp
+      | Code '.' Exp
       | '[' ListContent ']'
       | '(' ListContent ')'
+      | id '(' Code ')'
+      | id '[' Code ']'
       | Exp
-      | str
 
 ListContent -> Code ',' ListContent
              | Code
              |
 
-Exp -> id '(' Code ')'
-     | id '[' Code ']'
+Exp -> OPERATOR Exp
      | id
-     | int
+     | num
+     | str

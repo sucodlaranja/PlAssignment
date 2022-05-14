@@ -24,7 +24,7 @@ states = [("MULTILINECODE", "exclusive"),
 error(f"Illegal character '{t.value[0]}', [{t.lexer.lineno}]",t.lexer.skip(1) )
 Linecode error(f"ola")
 
-make
+make main
 
 %% YACC
 precedence = [
@@ -44,9 +44,9 @@ yacccc
 stat : VAR '=' exp { ts[p[1]] = p[3] }
 stat : exp { print(p[1]), print("ola") }
 exp : exp '+' exp { p[0] = p[1] + p[3] }
-exp : exp '-' exp { p[0] = p[1] - p[3] }
+exp : exp '-' exp { p[0] = -p[1] - p[3] }
 exp : exp '*' exp { p[0] = p[1] * p[3] }
-exp : exp '/' exp { p[0] = p[1] / p[3] }
+exp : exp '/' exp { p[0] = p[1] / p[3][3] }
 exp : '-' exp { p[0] = p[2] }
 exp : '(' exp ')' { p[0] = p[2] }
 exp : NUMBER { p[0] = p[1] }

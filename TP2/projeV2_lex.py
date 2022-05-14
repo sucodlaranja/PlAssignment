@@ -3,7 +3,7 @@ import ply.lex as lex
 literals = ['(', ')', ',', '[', ']', ':', '{', '}', '.', '=']
 tokens = ['MAKE', 'MAKE_MAIN', 'LITERALS', 'IGNORE', 'TOKENS', 'LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR', 'CODELINE', 'OPENCODELINE', 'OPENCODE', 'TEXT','CLOSECODE',
           'OPENCOMMENT', 'MCOMMENT', 'CLOSECOMMENT', 'PRECEDENCE', 'STATES',
-          'COMENTARY', 'str', 'id', 'int']
+          'COMENTARY', 'str', 'id', 'num']
 
 states = [("MULTILINECODE", "exclusive"),
           ("LINECODE", "exclusive"),
@@ -148,7 +148,7 @@ def t_id(t):
     return t
 
 
-def t_int(t):
+def t_num(t):
     r"""\d+(\.\d+)?"""
     return t
 

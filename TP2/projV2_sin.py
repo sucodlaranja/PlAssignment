@@ -314,6 +314,7 @@ def p_YaccLine_Exp_Name(p):
            + "    \"" + p[2] + " :" + p[4] + "\"\n" \
            + p[6]
 
+
 # GrammarComands -> Code ',' GrammarComands
 #                 | Code
 #                 |
@@ -432,9 +433,11 @@ def p_MultiComment_Empty(p):
 
 # Code -> Code OPERATOR Exp
 #       | Code '=' Exp
-#       | Exp '.' Exp
+#       | Code '.' Exp
 #       | '[' ListContent ']'
 #       | '(' ListContent ')'
+#       | id '(' Code ')'
+#       | id '[' Code ']'
 #       | Exp
 def p_Code_Operator(p):
     """Code : Code OPERATOR Exp"""
@@ -461,18 +464,18 @@ def p_Code_Tupple(p):
     p[0] = p[1] + p[2] + p[3]
 
 
+def p_Code_Function(p):
+    """Code : Code '(' Code ')'"""
+    p[0] = p[1] + p[2] + p[3] + p[4]
+
+
+def p_Code_Acess(p):
+    """Code : Code '[' Code ']'"""
+    p[0] = p[1] + p[2] + p[3] + p[4]
+
+
 def p_Code_exp(p):
     """Code : Exp """
-    p[0] = p[1]
-
-
-def p_Code_Operator_exp(p):
-    """Code : OPERATOR Exp """
-    p[0] = p[1] + p[2]
-
-
-def p_Code_str(p):
-    """Code : str"""
     p[0] = p[1]
 
 
@@ -494,19 +497,13 @@ def p_ListContent_Empty(p):
     p[0] = ""
 
 
-# Exp -> id '(' Code ')'
-#      | id '[' Code ']'
+# Exp -> OPERATOR Exp
 #      | id
-#      | int
+#      | num
 #      | str
-def p_Exp_Function(p):
-    """Exp : id '(' Code ')'"""
-    p[0] = p[1] + p[2] + p[3] + p[4]
-
-
-def p_Exp_List(p):
-    """Exp : id '[' Code ']'"""
-    p[0] = p[1] + p[2] + p[3] + p[4]
+def p_Exp_Operator_exp(p):
+    """Exp : OPERATOR Exp """
+    p[0] = p[1] + p[2]
 
 
 def p_Exp_id(p):
@@ -514,8 +511,13 @@ def p_Exp_id(p):
     p[0] = p[1]
 
 
-def p_Exp_int(p):
-    """Exp : int"""
+def p_Exp_num(p):
+    """Exp : num"""
+    p[0] = p[1]
+
+
+def p_Code_str(p):
+    """Exp : str"""
     p[0] = p[1]
 
 
