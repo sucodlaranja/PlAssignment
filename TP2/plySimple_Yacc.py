@@ -77,7 +77,7 @@ def p_LexLine_MAKE(p):
 
 def p_LexLine_MAKE_MAIN(p):
     """LexLine : MAKE_MAIN"""
-    p[0] = "\nlexer = lex.lex()\n\n" \
+    p[0] = "\n" \
            "for line in sys.stdin:\n" \
            "    lexer.input(line)\n" \
            "    for tok in lexer:\n" \
@@ -269,7 +269,7 @@ def p_YaccLine_MAKE(p):
 
 def p_YaccLine_MAKE_MAIN(p):
     """YaccLine : MAKE_MAIN"""
-    p[0] = "\nparser = yacc.yacc()\n\n" \
+    p[0] = "\n" \
            "for line in sys.stdin:\n" \
            "    parser.success = True\n" \
            "    parser.parse(line)\n" \
@@ -560,6 +560,8 @@ def readFile(filename):
     parser.parse(program)
     if parser.filename == "":
         parser.filename = filename.split(".")[0]
+    else:
+        parser.filename = parser.filename.replace("\"", "")
     if parser.success:
         return parser.filename, lex_content, yacc_content
     else:

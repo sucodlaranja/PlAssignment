@@ -131,7 +131,7 @@ def main():
 
     if len(sys.argv) == 2:
         if exists(sys.argv[1]):
-            print(sys.argv[1])
+
             filename, diclex, dicyacc = readFile(sys.argv[1])
             makeLex(filename, diclex)
             makeYacc(filename, dicyacc, diclex)
