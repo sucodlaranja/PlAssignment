@@ -1,5 +1,5 @@
 import ply.yacc as yacc
-from projeV2_lex import tokens, literals
+from plySimple_Lex import tokens, literals
 
 
 # PlySimple -> Filename LexGroup YaccGroup
@@ -72,12 +72,12 @@ def p_LexLine_PythonCode(p):
 
 def p_LexLine_MAKE(p):
     """LexLine : MAKE"""
-    p[0] = "lexer = lex.lex()\n\n"
+    p[0] = "\nlexer = lex.lex()\n\n"
 
 
 def p_LexLine_MAKE_MAIN(p):
     """LexLine : MAKE_MAIN"""
-    p[0] = "lexer = lex.lex()\n\n" \
+    p[0] = "\nlexer = lex.lex()\n\n" \
            "for line in sys.stdin:\n" \
            "    lexer.input(line)\n" \
            "    for tok in lexer:\n" \
@@ -264,12 +264,12 @@ def p_YaccLine_PythonCode(p):
 
 def p_YaccLine_MAKE(p):
     """YaccLine : MAKE"""
-    p[0] = "parser = yacc.yacc()\n\n"
+    p[0] = "\nparser = yacc.yacc()\n\n"
 
 
 def p_YaccLine_MAKE_MAIN(p):
     """YaccLine : MAKE_MAIN"""
-    p[0] = "parser = yacc.yacc()\n\n" \
+    p[0] = "\nparser = yacc.yacc()\n\n" \
            "for line in sys.stdin:\n" \
            "    parser.success = True\n" \
            "    parser.parse(line)\n" \

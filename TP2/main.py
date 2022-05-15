@@ -5,7 +5,7 @@ import sys
 import os
 from tokenize import Ignore
 from pygments import lex
-from projV2_sin import readFile
+from plySimple_Yacc import readFile
 separator = "/"
 directory = ""
 if os.name == "nt":
@@ -25,7 +25,7 @@ def makeLex(filename, diclexar):
             f = open(directory + separator + filename + "_lex.py", "w")
         else:
             f = open(filename + "_lex.py", "w")
-        lexar = "import ply.lex as lex" + "\n\n"
+        lexar = "import ply.lex as lex\nimport sys" + "\n\n"
 
         if "Literals" in diclexar.keys():
             lexar += "literals = " + diclexar["Literals"] + "\n"

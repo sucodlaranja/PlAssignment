@@ -1,10 +1,10 @@
-from projeV2_lex import lexer
-from projV2_sin import parser
+from plySimple_Lex import lexer
+from plySimple_Yacc import parser
 
 
 def test(a):
     if a == 0:
-        f = open("teste2.txt", "r", encoding="utf-8")
+        f = open("testeOnOff.txt", "r", encoding="utf-8")
 
         program = f.read()
         lexer.input(program)

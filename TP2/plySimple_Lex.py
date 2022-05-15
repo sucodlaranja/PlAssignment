@@ -1,7 +1,7 @@
 import ply.lex as lex
 
 literals = ['(', ')', ',', '[', ']', ':', '{', '}', '.', '=']
-tokens = ['MAKE', 'MAKE_MAIN', 'LITERALS', 'IGNORE', 'TOKENS', 'LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR', 'CODELINE', 'OPENCODELINE', 'OPENCODE', 'TEXT','CLOSECODE',
+tokens = ['MAKE', 'MAKE_MAIN', 'LITERALS', 'IGNORE', 'TOKENS', 'LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR', 'CODELINE', 'OPENCODELINE', 'OPENCODE', 'TEXT', 'CLOSECODE',
           'OPENCOMMENT', 'MCOMMENT', 'CLOSECOMMENT', 'PRECEDENCE', 'STATES',
           'COMENTARY', 'str', 'id', 'num']
 
@@ -103,7 +103,7 @@ def t_OPENCODELINE(t):
 
 
 def t_LINECODE_CODELINE(t):
-    r"""[^\n]*\n"""
+    r"""[^\n]*\n+|.+$"""
     t.lexer.begin('INITIAL')
     return t
 
@@ -127,7 +127,7 @@ def t_MULTICOMMENT_MCOMMENT(t):
 
 
 def t_COMENTARY(t):
-    r"""\#.*"""
+    r"""\#([^\n]*\n+|.+$)"""
     return t
 
 
