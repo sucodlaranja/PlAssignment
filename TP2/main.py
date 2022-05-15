@@ -50,10 +50,10 @@ def makeLex(filename, diclexar):
             for key in diclexar["States"].keys():
                 writekey = key.replace("\"", "")
                 if key in diclexar["IgnoreStates"].keys():
-                    lexar += "t_ignore_" + writekey + " = " + \
+                    lexar += "t_" + writekey + "_ignore = " + \
                         diclexar["IgnoreStates"][key] + "\n"
                 else:
-                    lexar += "t_ignore_" + writekey + " = \"\"\n"
+                    lexar += "t_" + writekey + "_ignore = \"\"\n"
 
         if "Precedence" in diclexar.keys():
             lexar += "precedence = " + \

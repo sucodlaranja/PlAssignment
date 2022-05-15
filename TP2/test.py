@@ -4,7 +4,7 @@ from plySimple_Yacc import parser
 
 def test(a):
     if a == 0:
-        f = open("testeFileSystem.txt", "r", encoding="utf-8")
+        f = open("testePlySimple.txt", "r", encoding="utf-8")
 
         program = f.read()
         lexer.input(program)

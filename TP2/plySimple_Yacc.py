@@ -97,7 +97,7 @@ def p_LexLine_Error(p):
 
 def p_LexLine_Error_State(p):
     """LexLine : id ERROR '(' ErrorArgs ')'"""
-    p[0] = "\n\ndef t_error_" + p[1] + "(t):\n" + p[4]
+    p[0] = "\n\ndef t_" + p[1] + "_error(t):\n" + p[4]
 
 
 def p_LexLine_Literals(p):
