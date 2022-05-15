@@ -55,7 +55,7 @@ PlySimple : Filename LexGroup YaccGroup {parser.filename = p[1],lex_content["Cod
 #*Filename -> str
            | *#
 Name Filename : str {p[0] = p[1]}
-Empty Filename : str {p[0] = p[1]}
+Empty Filename :  {p[0] = ""}
 
 #* LexGroup -> LEXINIT LexInput
              | LEXINIT
@@ -82,7 +82,7 @@ Single LexInput : LexLine {p[0] = p[1]}
           | STATES '=' '[' StatesArgs ']' *#
 PythonCode LexLine : PythonCode {p[0] = p[1]}
 MAKE LexLine : MAKE {p[0] = "\nlexer = lex.lex()\n\n"}
-MAKE_MAIN LexLine : MAKE_MAIN {"\n" + "for line in sys.stdin:\n"  + "    lexer.input(line)\n"  + "    for tok in lexer:\n" + "        print(tok)\n\n"}
+MAKE_MAIN LexLine : MAKE_MAIN {p[0] = "\n" + "for line in sys.stdin:\n"  + "    lexer.input(line)\n"  + "    for tok in lexer:\n" + "        print(tok)\n\n"}
 Return LexLine : str RETURN '(' id ',' ReturnArgs ')' {p[0] = "\n\ndef t_" + p[4] + "(t):\n" + "    r" + p[1] + "\n" + p[6]}
 Error LexLine : ERROR '(' ErrorArgs ')' {p[0] = "\n\ndef t_error(t):\n" + p[3]}
 Error_State LexLine : id ERROR '(' ErrorArgs ')' {p[0] = "\n\ndef t_error_" + p[1] + "(t):\n" + p[4]}
@@ -185,7 +185,7 @@ def p_YaccLine_MAKE_MAIN(p):
            "    else:\n" \
            "        print(\"Invalid sentence... Redo and try again\")\n\n"
 *%
-Precedence YaccLine : YaccLine PRECEDENCE '=' Code {yacc_content["Precedence"] = p[3], p[0] = ""}
+Precedence YaccLine : PRECEDENCE '=' Code {yacc_content["Precedence"] = p[3], p[0] = ""}
 
 %*
 def p_YaccLine_Exp(p):
@@ -285,6 +285,7 @@ Point Code : Code '.' Exp {p[0] = p[1] + p[2] + p[3]}
 List  Code : '[' ListContent ']' {p[0] = p[1] + p[2] + p[3]}
 Tupple Code : '(' ListContent ')' {p[0] = p[1] + p[2] + p[3]}
 Function Code : Code '(' Code ')' {p[0] = p[1] + p[2] + p[3] + p[4]}
+Acess Code : Code '[' Code ']' {p[0] = p[1] + p[2] + p[3] + p[4]}
 exp Code : Exp {p[0] = p[1]}
 
 #* ListContent -> ListContent ',' Exp
