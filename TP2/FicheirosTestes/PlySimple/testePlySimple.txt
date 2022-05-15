@@ -1,0 +1,331 @@
+%% LEX
+literals = ['(', ')', ',', '[', ']', ':', '{', '}', '.', '=']
+tokens = ['MAKE', 'MAKE_MAIN', 'LITERALS', 'IGNORE', 'TOKENS', 'LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR', 'CODELINE', 'OPENCODELINE', 'OPENCODE', 'TEXT', 'CLOSECODE',
+          'OPENCOMMENT', 'MCOMMENT', 'CLOSECOMMENT', 'PRECEDENCE', 'STATES',
+          'COMENTARY', 'str', 'id', 'num']
+
+states = [("MULTILINECODE", "exclusive"),
+          ("LINECODE", "exclusive"),
+          ("MULTICOMMENT", "exclusive")]
+
+'make[ ]*main' return(MAKE_MAIN,t)
+'make' return(MAKE,t)
+'literals' return(LITERALS,t)
+'states' return(STATES,t)
+'precedence' return(PRECEDENCE,t)
+'ignore(_[a-zA-Z_]\w*)?' return(IGNORE,t)
+'tokens' return(TOKENS,t)
+'%%[ ]*LEX[ ]*' return(LEXINIT,t)
+'%%[ ]*YACC[ ]*' return(YACCINIT,t)
+'return' return(RETURN,t)
+'error' return(ERROR,t)
+'[\+\*\-/]' return(OPERATOR,t)
+'%\*' return(OPENCODE,t.lexer.begin('MULTILINECODE'),t)
+'\*%' return(MULTILINECODE_CLOSECODE,t.lexer.begin('INITIAL'),t)
+'\n*\#\*' return(MULTILINECODE_OPENCOMMENT,lexer.laststate = 'MULTILINECODE',t.lexer.begin('MULTICOMMENT'),t)
+'([^\#\%](\*)+[^\#\%]|[^\*](\#)+[^\*]|[^\*](\%)+[^\*]|^[\#\%][^\*]|[^\*][\#\%]$|^[\*][^\#\%]|[^\#\%](\*)$|[^\*\%\#])+' return(MULTILINECODE_TEXT,t)
+
+'%' return(OPENCODELINE,t.lexer.begin('LINECODE'),t)
+'[^\n]*\n+|.+$' return(LINECODE_CODELINE,t.lexer.begin('INITIAL'),t)
+'\#\*' return(OPENCOMMENT,t.lexer.begin('MULTICOMMENT'),t)
+'\*\#' return(MULTICOMMENT_CLOSECOMMENT,t.lexer.begin(lexer.laststate),lexer.laststate = 'INITIAL',t)
+'(\*[^\#]|\*$|^\#|[^\*]\#|[^\*\#])+' return(MULTICOMMENT_MCOMMENT,t)
+'\#([^\n]*\n+|.+$)' return(COMENTARY,t)
+'[fr]?(\'.*?[^\\]\'|\"\"\".*?[^\\]\"\"\"|\".*?[^\\]\"|´.*?[^\\]´|.*?[^\\]’|\"\"|\"\"\"\"\"\"|``|\'\'|’’)' return(str,t)
+'[a-zA-Z_]\w*' return(id,t)
+'\d+(\.\d+)?' return(num,t)
+
+ignore = " \t\n"
+ignore_MULTILINECODE = ""
+ignore_LINECODE = ""
+ignore_MULTICOMMENT = "\n"
+
+error(f"ERROR: Illegal char '{t.value[0]}' at position IDK",t.lexer.skip(1))
+MULTILINECODE error(f"ERROR: Illegal char '{t.value[0]}' at position multiline",t.lexer.skip(1))
+LINECODE error(f"ERROR: Illegal char '{t.value[0]}' at position linecode",t.lexer.skip(1))
+MULTICOMMENT error(f"ERROR: Illegal char '{t.value[0]}' at position multicomment",t.lexer.skip(1))
+
+make 
+%lexer.laststate = "INITIAL"
+
+%% YACC
+
+PlySimple : Filename LexGroup YaccGroup {parser.filename = p[1],lex_content["Code"] = p[2],lex_content["Code"] = p[3]}
+
+#*Filename -> str
+           | *#
+Name Filename : str {p[0] = p[1]}
+Empty Filename :  {p[0] = ""}
+
+#* LexGroup -> LEXINIT LexInput
+             | LEXINIT
+             | *#
+Input LexGroup : LEXINIT LexInput {p[0] = p[2]}
+Just_Init LexGroup : LEXINIT {lex_content["empty"] = True, p[0] = ""}
+Empty LexGroup : {lex_content["empty"] = True,p[0] = ""}
+
+#* LexInput -> LexInput LexLine
+              | LexLine *#
+List LexInput : LexInput LexLine {p[0] = p[1] + p[2]}
+Single LexInput : LexLine {p[0] = p[1]}
+
+#* LexLine -> PythonCode
+          | MAKE
+          | MAKE_MAIN
+          | str RETURN '(' id ',' ReturnArgs ')'
+          | ERROR '(' ErrorArgs ')'
+          | id ERROR '(' ErrorArgs ')'
+          | LITERALS '=' str
+          | IGNORE '=' str
+          | TOKENS '=' Code
+          | PRECEDENCE '=' Code
+          | STATES '=' '[' StatesArgs ']' *#
+PythonCode LexLine : PythonCode {p[0] = p[1]}
+MAKE LexLine : MAKE {p[0] = "\nlexer = lex.lex()\n\n"}
+MAKE_MAIN LexLine : MAKE_MAIN {p[0] = "\n" + "for line in sys.stdin:\n"  + "    lexer.input(line)\n"  + "    for tok in lexer:\n" + "        print(tok)\n\n"}
+Return LexLine : str RETURN '(' id ',' ReturnArgs ')' {p[0] = "\n\ndef t_" + p[4] + "(t):\n" + "    r" + p[1] + "\n" + p[6]}
+Error LexLine : ERROR '(' ErrorArgs ')' {p[0] = "\n\ndef t_error(t):\n" + p[3]}
+Error_State LexLine : id ERROR '(' ErrorArgs ')' {p[0] = "\n\ndef t_error_" + p[1] + "(t):\n" + p[4]}
+Literals LexLine : LITERALS '=' Code {lex_content["Literals"] = p[3], p[0] = ""}
+
+%*
+#* Como este elemento é complexo 
+optamos por defini-lo como codigo python normal*#
+def p_LexLine_Ignore(p):
+    """LexLine : IGNORE '=' str"""
+    p[0] = ""
+    ign = p[1].split("_", 1)
+    if len(ign) > 1:
+        if "IgnoreStates" not in lex_content.keys():
+            lex_content["IgnoreStates"] = {}
+        lex_content["IgnoreStates"][ign[1]] = p[3]
+    else:
+        lex_content["Ignore"] = p[3]
+*%
+
+Tokens LexLine : TOKENS '=' Code { lex_content["Tokens"] = p[3],p[0] = ""}
+Precedence LexLine : PRECEDENCE '=' Code {lex_content["Precedence"] = p[3],p[0] = ""}
+States LexLine : STATES '=' '[' StatesArgs ']' {p[0] = ""}
+%*
+#* StateArgs -> '(' str ',' str ')' ',' StatesArgs
+             | '(' str ',' str ')'
+             | *#
+def p_StatesArgs_List(p):
+    """StatesArgs : '(' str ',' str ')' ',' StatesArgs"""
+    if "States" not in lex_content.keys():
+        lex_content["States"] = {}
+    lex_content["States"][p[2]] = p[4]
+    p[0] = ""
+
+
+def p_StatesArgs_State(p):
+    """StatesArgs : '(' str ',' str ')'"""
+    if "States" not in lex_content.keys():
+        lex_content["States"] = {}
+    lex_content["States"][p[2]] = p[4]
+    p[0] = ""
+*%
+Empty StatesArgs : {p[0] = ""}
+
+
+#* ReturnArgs -> OtherComands ',' Code
+              | OtherComands ','
+              | Code
+              | *#
+Return ReturnArgs : OtherComands ',' Code {p[0] = p[1] + "    return " + p[3] + "\n"}
+No_Return ReturnArgs : OtherComands ',' {p[0] = p[1]}
+Only_Return ReturnArgs : Code {p[0] = "    return " + p[1] + "\n"}
+Empty ReturnArgs : {p[0] = ""}
+
+#* ErrorArgs -> str ',' OtherComands
+             | ',' OtherComands
+             | str
+             | *#
+Print ErrorArgs : str ',' OtherComands {p[0] = "    print(" + p[1] + ")\n" + p[3]}
+No_Print ErrorArgs : ',' OtherComands {p[0] = p[2]}
+Only_Print ErrorArgs : str {p[0] = "    print(" + p[1] + ")\n"}
+empty ErrorArgs : {p[0] = ""}
+
+# OtherComands -> Code ',' OtherComands
+#              | Code
+List OtherComands : OtherComands ',' Code {p[0] = p[1] + "    " + p[3] + "\n"}
+Code OtherComands : Code {p[0] = "    " + p[1] + "\n"}
+
+#* YaccGroup -> YACCINIT YaccInput
+             | YACCINIT
+             | *#
+Input YaccGroup : YACCINIT YaccInput {p[0] = p[2]}
+Just_Init YaccGroup : YACCINIT {yacc_content["empty"] = True, p[0] = ""}
+Empty YaccGroup : {yacc_content["empty"] = True, p[0] = ""}
+
+#*YaccInput -> YaccInput YaccLine
+            | YaccLine*#
+
+List YaccInput : YaccInput YaccLine {p[0] = p[1] + p[2]}
+Single YaccInput : YaccLine {p[0] = p[1]}
+
+#* YaccLine -> PythonCode
+            | MAKE
+            | MAKE_MAIN
+            | PRECEDENCE '=' Code
+            | id ':' Grammar '{' GrammarComands '}'
+            | id ':' Grammar '{' GrammarComands '}' id
+            | *#
+PythonCode YaccLine : PythonCode {p[0] = p[1]}
+MAKE YaccLine : MAKE {p[0] = "\nparser = yacc.yacc()\n\n"}
+%*
+def p_YaccLine_MAKE_MAIN(p):
+    """YaccLine : MAKE_MAIN"""
+    p[0] = "\n" \
+           "for line in sys.stdin:\n" \
+           "    parser.success = True\n" \
+           "    parser.parse(line)\n" \
+           "    if parser.success:\n" \
+           "        print(\"Valid sentence!\")\n" \
+           "    else:\n" \
+           "        print(\"Invalid sentence... Redo and try again\")\n\n"
+*%
+Precedence YaccLine : PRECEDENCE '=' Code {yacc_content["Precedence"] = p[3], p[0] = ""}
+
+%*
+def p_YaccLine_Exp(p):
+    """YaccLine : id ':' Grammar '{' GrammarComands '}'"""
+    grammar_id = p[1]
+    if grammar_id in parser.grammar_entries.keys():
+        parser.grammar_entries[grammar_id] += 1
+        cc = '_' + str(parser.grammar_entries[grammar_id])
+    else:
+        parser.grammar_entries[grammar_id] = 1
+        cc = ""
+
+    p[0] = "\n\ndef p_" + p[1] + cc + "(p):\n" \
+           + "    \"" + p[1] + " :" + p[3] + "\"\n" \
+           + p[5]
+
+
+def p_YaccLine_Exp_Name(p):
+    """YaccLine : id id ':' Grammar '{' GrammarComands '}'"""
+    grammar_id = p[2] + "_" + p[1]
+    if grammar_id in parser.grammar_entries.keys():
+        parser.grammar_entries[grammar_id] += 1
+        cc = grammar_id + '_' + str(parser.grammar_entries[grammar_id])
+    else:
+        parser.grammar_entries[grammar_id] = 1
+        cc = grammar_id
+
+    p[0] = "\n\ndef p_" + cc + "(p):\n" \
+           + "    \"" + p[2] + " :" + p[4] + "\"\n" \
+           + p[6] *%
+
+Error YaccLine : ERROR '(' ErrorArgs ')' {p[0] = "\n\ndef p_error(p):\n" + p[3]}
+
+#* GrammarComands -> Code ',' GrammarComands
+                  | Code
+                  | *#
+List GrammarComands : GrammarComands ',' Code {p[0] = p[1] + "    " + p[3] + "\n"}
+Code GrammarComands : Code {p[0] = "    " + p[1] + "\n"}
+Empty GrammarComands : {p[0] = ""}
+
+#* PythonCode -> Codeline
+              | MultiCode
+              | COMENTARY
+              | MultiComment *#
+Codeline PythonCode : Codeline {p[0] = p[1]}
+MultiCode PythonCode : MultiCode {p[0] = p[1]}
+Comentary PythonCode : COMENTARY {p[0] = p[1]}
+MultiComment PythonCode : MultiComment {p[0] = p[1]}
+List Grammar : Grammar Elem {p[0] = p[1] + " " + p[2]}
+Empty Grammar : {p[0] = ""}
+
+# Elem -> id
+#       | str
+id Elem  : id {p[0] = p[1]}
+str Elem : str {p[0] = p[1]}
+
+# Codeline -> OPENCODELINE CODELINE
+Codeline : OPENCODELINE CODELINE {p[0] = p[2]}
+# MultiCode -> OPENCODE MCode CLOSECODE
+MultiCode : OPENCODE MCode CLOSECODE {p[0] = p[2]}
+
+# MCode -> MCode CodeOrComment
+#        | 
+MCode : MCode CodeOrComment {p[0] = p[1] + p[2]}
+empty MCode : {p[0] = ""}
+
+#* CodeOrComment -> MultiComment
+                 |  TEXT *#
+Comment CodeOrComment : MultiComment {p[0] = p[1]}
+
+Code CodeOrComment : TEXT {p[0] = p[1]}
+
+%*
+# MultiComment -> OPENCOMMENT MCOMMENT CLOSECOMMENT
+#               | OPENCOMMENT CLOSECOMMENT
+def p_MultiComment_Coment(p):
+    """MultiComment : OPENCOMMENT MCOMMENT CLOSECOMMENT"""
+    p[0] = ""
+    for line in p[2].split('\n'):
+        p[0] += "# " + line + "\n"
+*%
+
+Empty MultiComment : OPENCOMMENT CLOSECOMMENT {p[0] = ""}
+
+#* Code -> Code OPERATOR Exp
+        | Code '=' Exp
+        | Code '.' Exp
+        | '[' ListContent ']'
+        | '(' ListContent ')'
+        | id '(' Code ')'
+        | id '[' Code ']'
+        | Exp *#
+
+Operator Code : Code OPERATOR Exp {p[0] = p[1] + " " + p[2] + " " + p[3]}
+Equal Code : Code '=' Exp {p[0] = p[1] + " " + p[2] + " " + p[3]}
+Point Code : Code '.' Exp {p[0] = p[1] + p[2] + p[3]}
+List  Code : '[' ListContent ']' {p[0] = p[1] + p[2] + p[3]}
+Tupple Code : '(' ListContent ')' {p[0] = p[1] + p[2] + p[3]}
+Function Code : Code '(' Code ')' {p[0] = p[1] + p[2] + p[3] + p[4]}
+Acess Code : Code '[' Code ']' {p[0] = p[1] + p[2] + p[3] + p[4]}
+exp Code : Exp {p[0] = p[1]}
+
+#* ListContent -> ListContent ',' Exp
+               | Exp
+               | *#
+List ListContent : Code ',' ListContent {p[0] = p[1] + p[2] + p[3]}
+Exp  ListContent : Code {p[0] = p[1]}
+Empty ListContent : {p[0] = ""}
+
+#* Exp -> OPERATOR Exp
+       | id
+       | num
+       | str *#
+Operator_exp Exp : OPERATOR Exp {p[0] = p[1] + p[2]}
+id Exp : id {p[0] = p[1]}
+num Exp : num {p[0] = p[1]}
+str Exp : str {p[0] = p[1]}
+
+error(f'Erro sintático {p}',parser.success = False)
+
+# Build the parser
+make
+%*
+# lex content dictionary
+lex_content = {}
+
+# Yacc content dictionary
+yacc_content = {}
+
+# Name of the project
+parser.filename = ""
+
+# Dic to construct grammar
+parser.grammar_entries = {}
+
+
+# Booleans to certify "emptyness"
+lex_content["empty"] = False
+yacc_content["empty"] = False
+
+*%
+
+make main

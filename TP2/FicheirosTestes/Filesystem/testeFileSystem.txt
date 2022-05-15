@@ -1,0 +1,29 @@
+"filesystem"
+%% LEX
+tokens = ['NAME','FP','AP','VIR']
+
+',' return(VIR,t)
+'{' return(AP,t)
+'}' return(FP,t)
+'\w+' return(NAME,t)
+
+ignore = " \t\n"
+
+error(f'Caráter ilegal {t.value[0]}',t.lexer.skip(1))
+make
+%% YACC
+#*
+Input : PL { doc {} , aulas { 06-04 { f1,f2,f3} } }
+Output : mkdir PL; mkdir doc; mkdir aulas; mkdir 06-04;touch aulas/f1;touch aulas/f2;touch aulas/f3 
+*#
+
+Frase : Path {print(p[1])}
+Path : Filesystem {p[0] = p[1]}
+Path : Filesystem VIR Path {p[0] = p[1] + p[3]}
+Filesystem : NAME AP Path FP {p[0] = "mkdir " + p[1] + "; " + "cd " + p[1] + "/; " + p[3] + " cd ..; "}
+File Filesystem : NAME {p[0] = "touch " + p[1] + "; "}
+none Path : {p[0] = ""}
+
+error(f'Erro sintático {p}',parser.sucess = False)
+make
+make main

@@ -1,0 +1,23 @@
+"OnOff"
+%% LEX
+tokens = ["ON","OFF","NUM","PRINT"]
+ignore = " \n\t"
+
+'[oO][nN]' return(ON,lexer.on_off = True,)
+'[oO][fF][fF]' return(OFF,lexer.on_off = False,)
+'=' return(PRINT,print(f'soma {lexer.sum}'),)
+
+%*
+def t_NUM(t):
+    r'(\d+)'
+    if lexer.on_off:
+        lexer.sum += int(t.value)
+*%
+
+error(f"ERROR: Illegal char '{t.value[0]}' at position IDK",t.lexer.skip(1))
+
+make
+%lexer.sum = 0
+%lexer.on_off = True
+
+make main
