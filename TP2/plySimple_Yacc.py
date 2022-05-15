@@ -257,6 +257,7 @@ def p_YaccInput_Single(p):
 #           | PRECEDENCE '=' Code
 #           | id ':' Grammar '{' GrammarComands '}'
 #           | id ':' Grammar '{' GrammarComands '}' id
+#           |
 def p_YaccLine_PythonCode(p):
     """YaccLine : PythonCode"""
     p[0] = p[1]
@@ -315,9 +316,16 @@ def p_YaccLine_Exp_Name(p):
            + p[6]
 
 
+def p_YaccLine_Error(p):
+    """YaccLine : ERROR '(' ErrorArgs ')'"""
+    p[0] = "\n\ndef p_error(p):\n" + p[3]
+
+
 # GrammarComands -> Code ',' GrammarComands
 #                 | Code
 #                 |
+
+
 def p_GrammarComands_List(p):
     """GrammarComands : GrammarComands ',' Code"""
     p[0] = p[1] + "    " + p[3] + "\n"
