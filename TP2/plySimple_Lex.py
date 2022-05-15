@@ -1,72 +1,73 @@
 import ply.lex as lex
 
-literals = ['(', ')', ',', '[', ']', ':', '{', '}', '.', '=']
-tokens = ['MAKE', 'MAKE_MAIN', 'LITERALS', 'IGNORE', 'TOKENS', 'LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR', 'CODELINE', 'OPENCODELINE', 'OPENCODE', 'TEXT', 'CLOSECODE',
-          'OPENCOMMENT', 'MCOMMENT', 'CLOSECOMMENT', 'PRECEDENCE', 'STATES',
-          'COMENTARY', 'str', 'id', 'num']
-
 states = [("MULTILINECODE", "exclusive"),
           ("LINECODE", "exclusive"),
           ("MULTICOMMENT", "exclusive")]
 
+literals = ['(', ')', ',', '[', ']', ':', '{', '}', '.', '=']
+
+tokens = ['MAKE', 'MAKE_MAIN', 'LITERALS', 'IGNORE', 'TOKENS', 'LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR',
+          'CODELINE', 'OPENCODELINE', 'OPENCODE', 'TEXT', 'CLOSECODE','OPENCOMMENT', 'MCOMMENT', 'CLOSECOMMENT',
+          'PRECEDENCE', 'STATES', 'COMENTARY', 'str', 'id', 'num']
+
 
 def t_MAKE_MAIN(t):
-    r"""make[ ]*main"""
+    r"""(?i)make[ ]*main"""
     return t
 
 
 def t_MAKE(t):
-    r"""make"""
+    r"""(?i)make"""
     return t
 
 
 def t_LITERALS(t):
-    r"""literals"""
-    return t
-
-
-def t_STATES(t):
-    r"""states"""
-    return t
-
-
-def t_PRECEDENCE(t):
-    r"""precedence"""
+    r"""(?i)literals"""
     return t
 
 
 def t_IGNORE(t):
-    r"""ignore(_[a-zA-Z_]\w*)?"""
+    r"""(?i)ignore(_[a-zA-Z_]\w*)?"""
+    return t
+
+
+def t_STATES(t):
+    r"""(?i)states"""
+    return t
+
+
+def t_PRECEDENCE(t):
+    r"""(?i)precedence"""
     return t
 
 
 def t_TOKENS(t):
-    r"""tokens"""
+    r"""(?i)tokens"""
     return t
 
 
 def t_LEXINIT(t):
-    r"""%%[ ]*LEX[ ]*"""
+    r"""(?i)%%[ ]*LEX"""
     return t
 
 
 def t_YACCINIT(t):
-    r"""%%[ ]*YACC[ ]*"""
+    r"""(?i)%%[ ]*YACC"""
     return t
 
 
 def t_RETURN(t):
-    r"""return"""
+    r"""(?i)return"""
     return t
 
 
 def t_ERROR(t):
-    r"""error"""
+    r"""(?i)error"""
     return t
 
 
 def t_OPERATOR(t):
-    r"""[\+\*\-/]"""
+    r"""([\+\*\-/]=|[><]=|[\+\*\-/<>])"""
     return t
 
 
@@ -83,7 +84,7 @@ def t_MULTILINECODE_CLOSECODE(t):
 
 
 def t_MULTILINECODE_OPENCOMMENT(t):
-    r"""\n*\#\*"""
+    r"""\#\*"""
     lexer.laststate = 'MULTILINECODE'
     t.lexer.begin('MULTICOMMENT')
     return t

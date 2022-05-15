@@ -324,8 +324,6 @@ def p_YaccLine_Error(p):
 # GrammarComands -> Code ',' GrammarComands
 #                 | Code
 #                 |
-
-
 def p_GrammarComands_List(p):
     """GrammarComands : GrammarComands ',' Code"""
     p[0] = p[1] + "    " + p[3] + "\n"
