@@ -516,7 +516,7 @@ def p_Exp_num(p):
     p[0] = p[1]
 
 
-def p_Code_str(p):
+def p_Exp_str(p):
     """Exp : str"""
     p[0] = p[1]
 
