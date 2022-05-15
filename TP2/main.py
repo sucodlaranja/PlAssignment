@@ -123,7 +123,6 @@ def runprocess(filename, testfile):
     pythonArgs = ["python3", file + "_yacc.py"]
     process1 = subprocess.Popen(catArgs, stdout=subprocess.PIPE)
     subprocess.Popen(pythonArgs, stdin=process1.stdout)
-    print(process1.stdout)
 
 
 def main():
@@ -178,7 +177,7 @@ def main():
                 print(f'File {sys.argv[1]} does not exist!')
                 interpretador()
 
-        if sys.argv[4] == "-f":
+        elif sys.argv[4] == "-f":
             directory = sys.argv[5]
             if exists(sys.argv[1]):
                 filename, diclex, dicyacc = readFile(

@@ -101,7 +101,7 @@ def p_LexLine_Error_State(p):
 
 
 def p_LexLine_Literals(p):
-    """LexLine : LITERALS '=' str"""
+    """LexLine : LITERALS '=' Code"""
     p[0] = ""
     lex_content["Literals"] = p[3]
 

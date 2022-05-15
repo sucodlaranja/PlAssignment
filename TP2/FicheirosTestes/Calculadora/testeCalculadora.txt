@@ -1,0 +1,34 @@
+"calculadora"
+%% LEX
+tokens = ['NUM','MAI','MEN','MUL','DIV']
+
+'\d+' return(NUM,t)
+'\+' return(MAI,t)
+'\-' return(MEN,t)
+'\*' return(MUL,t)
+'/' return(DIV,t)
+
+error(f'Caráter ilegal: t.value[0]',t.lexer.skip(1))
+make
+
+%% YACC
+precedence =(
+    ('left','MAI','MEN'),
+    ('left','DIV','MUL'),
+    
+)
+
+Frase : Elementos {print(p[1])}
+#Parte das operações
+mais Elementos : Elementos MAI Elementos {p[0] = float(p[1]) + float(p[3])}
+menos Elementos : Elementos MEN Elementos {p[0] = float(p[1]) - float(p[3])}
+vezes Elementos : Elementos MUL Elementos {p[0] = float(p[1]) * float(p[3])}
+div Elementos : Elementos DIV Elementos {p[0] = float(p[1]) / float(p[3])}
+#Expressoes
+expressao Elementos : Expressao {p[0] = p[1]}
+Expressao : NUM {p[0] = p[1]}
+
+
+error(f'Erro sintatico: {p}',parser.sucess = False)
+make
+make main
