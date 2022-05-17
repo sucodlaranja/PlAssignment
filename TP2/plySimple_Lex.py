@@ -7,62 +7,62 @@ states = [("MULTILINECODE", "exclusive"),
 literals = ['(', ')', ',', '[', ']', ':', '{', '}', '.', '=']
 
 tokens = ['MAKE', 'MAKE_MAIN', 'LITERALS', 'IGNORE', 'TOKENS', 'LEXINIT', 'YACCINIT', 'RETURN', 'ERROR', 'OPERATOR',
-          'CODELINE', 'OPENCODELINE', 'OPENCODE', 'TEXT', 'CLOSECODE','OPENCOMMENT', 'MCOMMENT', 'CLOSECOMMENT',
+          'CODELINE', 'OPENCODELINE', 'OPENCODE', 'TEXT', 'CLOSECODE', 'OPENCOMMENT', 'MCOMMENT', 'CLOSECOMMENT',
           'PRECEDENCE', 'STATES', 'COMENTARY', 'str', 'id', 'num']
 
 
 def t_MAKE_MAIN(t):
-    r"""(?i)make[ ]*main"""
+    r"""make[ ]*main[ ]*"""
     return t
 
 
 def t_MAKE(t):
-    r"""(?i)make"""
+    r"""make"""
     return t
 
 
 def t_LITERALS(t):
-    r"""(?i)literals"""
+    r"""literals"""
     return t
 
 
 def t_IGNORE(t):
-    r"""(?i)ignore(_[a-zA-Z_]\w*)?"""
+    r"""ignore(_[a-zA-Z_]\w*)?"""
     return t
 
 
 def t_STATES(t):
-    r"""(?i)states"""
+    r"""states"""
     return t
 
 
 def t_PRECEDENCE(t):
-    r"""(?i)precedence"""
+    r"""precedence"""
     return t
 
 
 def t_TOKENS(t):
-    r"""(?i)tokens"""
+    r"""tokens"""
     return t
 
 
 def t_LEXINIT(t):
-    r"""(?i)%%[ ]*LEX"""
+    r"""%%[ ]*LEX"""
     return t
 
 
 def t_YACCINIT(t):
-    r"""(?i)%%[ ]*YACC"""
+    r"""%%[ ]*YACC"""
     return t
 
 
 def t_RETURN(t):
-    r"""(?i)return"""
+    r"""return"""
     return t
 
 
 def t_ERROR(t):
-    r"""(?i)error"""
+    r"""error"""
     return t
 
 
@@ -135,12 +135,11 @@ def t_COMENTARY(t):
 def t_str(t):
     r"""
     [fr]?
-    (\'.*?[^\\]\'|
+    (\"\"|\"\"\"\"\"\"|``|\'\'|’’|\'.*?[^\\]\'|
     \"\"\".*?[^\\]\"\"\"|
     \".*?[^\\]\"|
     ´.*?[^\\]´|
-    ’.*?[^\\]’
-    |\"\"|\"\"\"\"\"\"|``|\'\'|’’)
+    ’.*?[^\\]’)
     """
     return t
 

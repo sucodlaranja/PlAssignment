@@ -104,7 +104,7 @@ def p_LexLine_Ignore(p):
 *%
 
 Tokens LexLine : TOKENS '=' Code { lex_content["Tokens"] = p[3],p[0] = ""}
-Precedence LexLine : PRECEDENCE '=' Code {lex_content["Precedence"] = p[3],p[0] = ""}
+Precedence LexLine : PRECEDENCE '=' Code {p[0] = "",lex_content["Precedence"] = p[3]}
 States LexLine : STATES '=' '[' StatesArgs ']' {p[0] = ""}
 %*
 #* StateArgs -> '(' str ',' str ')' ',' StatesArgs

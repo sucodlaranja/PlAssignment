@@ -79,4 +79,4 @@ y.parse("3+4*7")
 
 *%
 
-make maiN
+make main

@@ -3,7 +3,6 @@ from os.path import exists
 import subprocess
 import sys
 import os
-from tokenize import Ignore
 from pygments import lex
 from plySimple_Yacc import readFile
 separator = "/"
@@ -112,15 +111,19 @@ def interpretador():
         makeYacc(filename, dicyacc, diclex)
 
 
-def runprocess(filename, testfile):
+# Runs the test file
+def runprocess(filename, testfile, dicyacc):
     catArgs = ["cat", testfile]
-
+    if dicyacc["empty"]:
+        end = "_lex.py"
+    else:
+        end = "_yacc.py"
     if directory != "":
         file = directory + separator + filename
     else:
         file = filename
 
-    pythonArgs = ["python3", file + "_yacc.py"]
+    pythonArgs = ["python3", file + end]
     process1 = subprocess.Popen(catArgs, stdout=subprocess.PIPE)
     subprocess.Popen(pythonArgs, stdin=process1.stdout)
 
@@ -155,7 +158,7 @@ def main():
                     sys.argv[1])
                 makeLex(filename, diclex)
                 makeYacc(filename, dicyacc, diclex)
-                runprocess(filename, sys.argv[3])
+                runprocess(filename, sys.argv[3], dicyacc)
             else:
                 print(f'File {sys.argv[1]} does not exist!')
                 interpretador()
@@ -172,7 +175,7 @@ def main():
                     sys.argv[1])
                 makefolder(filename, diclex, dicyacc)
                 if sys.argv[4] == "-t":
-                    runprocess(filename, sys.argv[5])
+                    runprocess(filename, sys.argv[5], dicyacc)
             else:
                 print(f'File {sys.argv[1]} does not exist!')
                 interpretador()
@@ -184,7 +187,7 @@ def main():
                     sys.argv[1])
                 makefolder(filename, diclex, dicyacc)
                 if sys.argv[2] == "-t":
-                    runprocess(filename, sys.argv[3])
+                    runprocess(filename, sys.argv[3], dicyacc)
             else:
                 print(f'File {sys.argv[1]} does not exist!')
                 interpretador()
