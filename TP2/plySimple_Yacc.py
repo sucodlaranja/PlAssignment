@@ -471,12 +471,12 @@ def p_Code_Tupple(p):
 
 
 def p_Code_Function(p):
-    """Code : Code '(' Code ')'"""
+    """Code : Code '(' ListContent ')'"""
     p[0] = p[1] + p[2] + p[3] + p[4]
 
 
 def p_Code_Acess(p):
-    """Code : Code '[' Code ']'"""
+    """Code : Code '[' ListContent ']'"""
     p[0] = p[1] + p[2] + p[3] + p[4]
 
 
