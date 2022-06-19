@@ -3,7 +3,6 @@ from os.path import exists
 import subprocess
 import sys
 import os
-from pygments import lex
 from plySimple_Yacc import readFile
 separator = "/"
 directory = ""
